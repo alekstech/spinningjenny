@@ -1,0 +1,23 @@
+{
+  "name": "textilemuseum",
+  "version": "1.0.0",
+  "description": "Volunteer shift management web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blurges/textilemuseum.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blurges/textilemuseum/issues"
+  },
+  "homepage": "https://github.com/blurges/textilemuseum#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
