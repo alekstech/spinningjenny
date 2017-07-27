@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/blurges/textilemuseum.git"
+    "url": "git+https://github.com/textilemuseum/spinningjenny.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/blurges/textilemuseum/issues"
+    "url": "https://github.com/textilemuseum/spinningjenny/issues"
   },
-  "homepage": "https://github.com/blurges/textilemuseum#readme",
+  "homepage": "https://github.com/textilemuseum/spinningjenny#readme",
   "dependencies": {
     "express": "^4.15.3"
   }
