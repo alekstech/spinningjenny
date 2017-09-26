@@ -1,8 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
 	const Volunteer = sequelize.define('Volunteer', {
 		id: {
-			type: DataTypes.UUID,
-			unique: true
+			type: DataTypes.INTEGER,
+			autoIncrement: true,
+			primaryKey: true
 		},
 		isAdmin: {
 			type: DataTypes.BOOLEAN,
@@ -57,32 +58,21 @@ module.exports = (sequelize, DataTypes) => {
 					msg: 'Must be between 1 and 35 characters'
 				},
 				is: {
-					args: ^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$,
-					msg: 'Only letters, numbers, underscores, and hyphens'
+					args: /^[a-zA-Z-]+$/,
+					msg: 'Only letters and hyphens'
 				}
 			}
 		},
 		startDate: {
 			type: DataTypes.DATEONLY,
 			validate: {
-					isDate: true
-				}
+				isDate: true
 			}
 		},
 		quitDate: {
 			type: DataTypes.DATEONLY,
 			validate: {
-					isDate: true
-				}
-			}
-		},
-		quitDate: {
-			type: DataTypes.STRING,
-			validate: {
-				isEmail: {
-					args: true,
-					msg: 'Valid email addresses only'
-				}
+				isDate: true
 			}
 		},
 		phone: {
@@ -98,15 +88,15 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 		emergencyName: {
-			type: DataTypes.String,
+			type: DataTypes.STRING,
 			validate: {
 				len: {
 					args: [1, 70],
 					msg: 'Must be between 1 and 70 letters'
 				},
-				isAlpha: {
-					args: true,
-					msg: 'Only letters allowed'
+				is: {
+					args: /^[a-zA-Z-\s]+$/,
+					msg: 'Only letters, hyphens and spaces allowed'
 				}
 			}
 		},
@@ -126,21 +116,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.BOOLEAN
 		}
 	})
+
+	Volunteer.associate = function(models) {
+		Volunteer.hasMany(models.Award)
+	}
+
 	return Volunteer
 }
-
-
-// Volunteer
-// id Int
-// isAdmin Bool
-// isStaff Bool
-// givenName Str
-// surName Str
-// started Date
-// resigned Date
-// email Str
-member Int ???
-// telephone Int
-// emergencyName Str
-// emergencyTelephone Int
-// nonAdminsCanView Bool
