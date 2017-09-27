@@ -26,3 +26,6 @@ Ontario Volunteer Service Award (Year):    None    No change
 Include me in Strand News mailings:    Yes    No change
 Consent to share email within museum and volunteer administration:    Yes    No change
 Consent to share email with other volunteers (if no, we will always BCC):    Yes    No change```
+
+http://www.textilemuseum.ca/join-support/volunteering/volunteer
+http://www.textilemuseum.ca/join-support/volunteering
