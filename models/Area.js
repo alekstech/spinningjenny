@@ -5,13 +5,17 @@ module.exports = (sequelize, DataTypes) => {
 			autoIncrement: true,
 			primaryKey: true
 		},
-		date: {
-			type: DataTypes.DATE
+		name: {
+			type: DataTypes.STRING
 		}
 	})
 
 	Area.associate = function(models) {
-		Area.hasMany(models.Volunteer)
+		Area.hasMany(models.Volunteer, {
+			foreignKey: {
+				allowNull: false
+			}
+		})
 	}
 
 	return Area

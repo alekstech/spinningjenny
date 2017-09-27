@@ -117,9 +117,5 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	})
 
-	Volunteer.associate = function(models) {
-		Volunteer.hasMany(models.Award)
-	}
-
 	return Volunteer
 }

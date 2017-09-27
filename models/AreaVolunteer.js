@@ -1,10 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
 	const AreaVolunteer = sequelize.define('AreaVolunteer', {
-		id: {
-			type: DataTypes.INTEGER,
-			autoIncrement: true,
-			primaryKey: true
-		},
 		joined: {
 			type: DataTypes.DATE
 		},
@@ -23,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	
 	AreaVolunteer.associate = function(models) {
-		AreaVolunteer.hasOne(models.Area)
+		AreaVolunteer.belongsTo(models.Area)
 	}
 
 	AreaVolunteer.associate = function(models) {
-		AreaVolunteer.hasMany(models.Volunteer)
+		AreaVolunteer.belongsTo(models.Volunteer)
 	}
 
 	return AreaVolunteer
