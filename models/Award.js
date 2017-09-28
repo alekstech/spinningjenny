@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	Award.associate = function(models) {
 		Award.hasMany(models.AwardType)
+		Award.belongsTo(models.Volunteer)
 	}
 
 	return Award

@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	})
 
-	Area.associate = function(models) {
-		Area.hasMany(models.Volunteer, {
-			foreignKey: {
-				allowNull: false
-			}
-		})
-	}
+	// Area.associate = function(models) {
+	// 	Area.hasMany(models.Volunteer, {
+	// 		foreignKey: {
+	// 			allowNull: false
+	// 		}
+	// 	})
+	// }
 
 	return Area
 }

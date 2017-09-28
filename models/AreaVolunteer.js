@@ -18,12 +18,17 @@ module.exports = (sequelize, DataTypes) => {
 	})
 	
 	AreaVolunteer.associate = function(models) {
-		AreaVolunteer.belongsTo(models.Area)
+		AreaVolunteer.belongsTo(models.Area, {
+			foreignKey: {
+				primaryKey: true
+			}
+		})
+		AreaVolunteer.belongsTo(models.Volunteer, {
+			foreignKey: {
+				primaryKey: true
+			}
+		})
 	}
-
-	AreaVolunteer.associate = function(models) {
-		AreaVolunteer.belongsTo(models.Volunteer)
-	}
-
+	
 	return AreaVolunteer
 }

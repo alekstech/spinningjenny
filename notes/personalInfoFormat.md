@@ -28,4 +28,52 @@ Consent to share email within museum and volunteer administration:    Yes    No 
 Consent to share email with other volunteers (if no, we will always BCC):    Yes    No change```
 
 http://www.textilemuseum.ca/join-support/volunteering/volunteer
-http://www.textilemuseum.ca/join-support/volunteering
+Membership Expiry Date
+What experience and/or skills can you bring to the Museum? Check all that apply:
+	Library training and/or experience
+	Teaching
+	Hospitality and events
+	Computer Skills
+	Retail
+	Administrative
+	Photography
+	Writing
+	Enjoy meeting people
+	Organization
+	Languages
+List any other skills, hobbies or interests you have that might be helpful in your volunteer work:
+Tell us why you are interested in volunteering at the TMC and what you hope to gain from the experience:
+Are you working?:
+	No
+	Full-time
+	Part-time
+Are you a student?:
+	No
+	Full-time
+	Part-time
+Do you have a computer?:
+	Yes
+	No
+
+What is your availability? Check all that apply.
+
+	Mornings (11am - 2pm):
+	Monday
+	Tuesday
+	Wednesday
+	Thursday
+	Friday
+	Saturday
+	Sunday
+	Afternoons (2pm - 5pm):
+	Monday
+	Tuesday
+	Wednesday
+	Thursday
+	Friday
+	Saturday
+	Sunday
+	Wednesday Evenings (5pm - 8pm):
+	Wednesday
+
+Are there any restrictions on the time you are able to commit (ex. Regular travel dates, classes, etc)?:

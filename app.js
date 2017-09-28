@@ -7,7 +7,7 @@ const config = require('./config/config')
 
 require('./routes')(app)
 
-sequelize.sync({force: false})
+sequelize.sync({force: true})
   .then(() => {
   	console.log('Postgresql connection has been established successfully.')
     app.listen(config.port)

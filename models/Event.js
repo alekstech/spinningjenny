@@ -22,9 +22,9 @@ module.exports = (sequelize, DataTypes) => {
 		},
 	})
 
-	Event.associate = function(models) {
-		Event.hasMany(models.Volunteer)
-	}
+	// Event.associate = function(models) {
+	// 	Event.hasMany(models.Volunteer)
+	// }
 
 	return Event
 }

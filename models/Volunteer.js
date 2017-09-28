@@ -24,32 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
-		otherName: {
-			type: DataTypes.STRING,
-			validate: {
-				len: {
-					args: [1, 35],
-					msg: 'Must be between 1 and 35 letters'
-				},
-				isAlpha: {
-					args: true,
-					msg: 'Only letters allowed'
-				}
-			}
-		},
-		preferredName: {
-			type: DataTypes.STRING,
-			validate: {
-				len: {
-					args: [1, 35],
-					msg: 'Must be between 1 and 35 letters'
-				},
-				isAlpha: {
-					args: true,
-					msg: 'Only letters allowed'
-				}
-			}
-		},
 		familyName: {
 			type: DataTypes.STRING,
 			validate: {
