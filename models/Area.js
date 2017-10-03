@@ -7,6 +7,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		name: {
 			type: DataTypes.STRING
+		},
+		allowsSelfRegistration: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
 		}
 	})
 
@@ -17,6 +24,6 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		})
 	}
-
+	
 	return Area
 }

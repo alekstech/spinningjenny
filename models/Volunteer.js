@@ -63,6 +63,70 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		mailingAddress1: {
+			type: DataTypes.STRING,
+			validate: {
+				len: {
+					args: [1, 35],
+					msg: 'Must be between 1 and 35 characters'
+				}
+			}
+		},
+		mailingAddress2: {
+			type: DataTypes.STRING,
+			validate: {
+				len: {
+					args: [0, 35],
+					msg: 'No more than 35 characters'
+				}
+			}
+		},
+		postcode: {
+			type: DataTypes.STRING,
+			validate: {
+				len: {
+					args: [1, 35],
+					msg: 'Must be between 1 and 35 characters'
+				},
+				is: {
+					args: /[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]/,
+					msg: 'Canadian postcodes only'
+				}
+			}
+		},
+		city: {
+			type: DataTypes.STRING,
+			validate: {
+				len: {
+					args: [1, 35],
+					msg: 'Must be between 1 and 35 characters'
+				}
+			}
+		},
+		province: {
+			type: DataTypes.STRING,
+			validate: {
+				len: {
+					args: [1, 35],
+					msg: 'Must be between 1 and 35 characters'
+				}
+			}
+		},
+		mambershipNumber: {
+			type: DataTypes.INTEGER,
+			validate: {
+				isInt: {
+					args: true,
+					msg: 'Numbers only'
+				}
+			}
+		},
+		membershipExpiry: {
+			type: DataTypes.DATEONLY,
+			validate: {
+				isDate: true
+			}
+		},
 		startDate: {
 			type: DataTypes.DATEONLY,
 			validate: {
@@ -112,8 +176,64 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
+		interestedInAdHoc: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
+		},
+		willingToTrain: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
+		},
+		completedAccessibilityTraining: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
+		},
+		strandNewsMailings: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
+		},
+		skills: {
+			type: DataTypes.ARRAY(DataTypes.STRING)
+		},
+		student: {
+			type: DataTypes.STRING
+		},
+		employed: {
+			type: DataTypes.STRING
+		},
+		motivation: {
+			type: DataTypes.STRING
+		},
+		goals: {
+			type: DataTypes.STRING
+		},
+		howDidYouHearAboutUs: {
+			type: DataTypes.STRING
+		},
+		additionalInfo: {
+			type: DataTypes.STRING
+		},
+		desiredRoles: {
+			type: DataTypes.ARRAY(DataTypes.STRING)
+		},
 		nonAdminsCanView: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: [true, false],
+				msg: 'Only yes or no answers'
+			}
 		}
 	})
 
