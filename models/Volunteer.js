@@ -18,9 +18,9 @@ module.exports = (sequelize, DataTypes) => {
 					args: [1, 35],
 					msg: 'Must be between 1 and 35 letters'
 				},
-				isAlpha: {
-					args: true,
-					msg: 'Only letters allowed'
+				is: {
+					args: /^[a-zA-Z-'\s]+$/,
+					msg: 'Only letters, hyphens, apostrophes and spaces allowed'
 				}
 			}
 		},
@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
 					msg: 'Must be between 1 and 35 characters'
 				},
 				is: {
-					args: /^[a-zA-Z-]+$/,
-					msg: 'Only letters and hyphens'
+					args: /^[a-zA-Z-'\s]+$/,
+					msg: 'Only letters, hyphens, apostrophes and spaces allowed'
 				}
 			}
 		},
@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
 					msg: 'Must be between 1 and 35 characters'
 				},
 				is: {
-					args: /[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]/,
+					args: /[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]([0-9][ABCEGHJKLMNPRSTVWXYZ][0-9])?/,
 					msg: 'Canadian postcodes only'
 				}
 			}
@@ -86,8 +86,8 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
-		mambershipNumber: {
-			type: DataTypes.INTEGER,
+		membershipNumber: {
+			type: DataTypes.STRING,
 			validate: {
 				isInt: {
 					args: true,
@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 			}
 		},
 		phone: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			validate: {
 				isInt: {
 					args: true
@@ -133,13 +133,13 @@ module.exports = (sequelize, DataTypes) => {
 					msg: 'Must be between 1 and 70 letters'
 				},
 				is: {
-					args: /^[a-zA-Z-\s]+$/,
-					msg: 'Only letters, hyphens and spaces allowed'
+					args: /^[a-zA-Z-'\s]+$/,
+					msg: 'Only letters, hyphens, apostrophes and spaces allowed'
 				}
 			}
 		},
 		emergencyPhone: {
-			type: DataTypes.INTEGER,
+			type: DataTypes.STRING,
 			validate: {
 				isInt: {
 					args: true
@@ -153,29 +153,37 @@ module.exports = (sequelize, DataTypes) => {
 		interestedInAdHoc: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		},
 		willingToTrain: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		},
 		completedAccessibilityTraining: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		},
 		strandNewsMailings: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		},
 		skills: {
@@ -205,8 +213,10 @@ module.exports = (sequelize, DataTypes) => {
 		nonAdminsCanView: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		}
 	})
