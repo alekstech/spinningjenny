@@ -1,16 +1,52 @@
 module.exports = (sequelize, DataTypes) => {
 	const AreaVolunteer = sequelize.define('AreaVolunteer', {
 		joined: {
-			type: DataTypes.DATE
+			type: DataTypes.DATEONLY,
+			validate: {
+				isDate: true
+			}
 		},
 		left: {
-			type: DataTypes.DATE
+			type: DataTypes.DATEONLY,
+			validate: {
+				isDate: true
+			}
 		},
 		regular: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
 		},
 		floater: {
-			type: DataTypes.BOOLEAN
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
+		},
+		coordinator: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
+		},
+		trainee: {
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
 		},
 		notes: {
 			type: DataTypes.STRING

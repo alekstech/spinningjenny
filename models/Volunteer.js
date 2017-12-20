@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
 		isStaff: {
 			type: DataTypes.BOOLEAN,
 		},
+		email: {
+			type: DataTypes.STRING,
+			validate: {
+				isEmail: true
+			}
+		},
 		firstName: {
 			type: DataTypes.STRING,
 			validate: {
@@ -24,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
-		familyName: {
+		lastName: {
 			type: DataTypes.STRING,
 			validate: {
 				len: {
@@ -168,15 +174,6 @@ module.exports = (sequelize, DataTypes) => {
 				}
 			}
 		},
-		completedAccessibilityTraining: {
-			type: DataTypes.BOOLEAN,
-			validate: {
-				isIn: {
-					args: [[true, false]],
-					msg: 'Only yes or no answers'
-				}
-			}
-		},
 		strandNewsMailings: {
 			type: DataTypes.BOOLEAN,
 			validate: {
@@ -218,7 +215,16 @@ module.exports = (sequelize, DataTypes) => {
 					msg: 'Only yes or no answers'
 				}
 			}
-		}
+		},
+		tsecret: {
+			type: DataTypes.STRING
+		},
+		hsecret: {
+			type: DataTypes.STRING
+		},
+		hcounter: {
+			type: DataTypes.INTEGER
+		},
 	})
 
 	return Volunteer

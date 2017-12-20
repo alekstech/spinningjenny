@@ -5,10 +5,22 @@
   "proxy": "http://localhost:5035",
   "dependencies": {
     "axios": "^0.16.2",
+    "dompurify": "^1.0.2",
+    "history": "^4.7.2",
+    "material-ui": "^1.0.0-beta.18",
+    "material-ui-pickers": "^1.0.0-beta.7",
+    "mdi-material-ui": "^2.0.1",
+    "moment": "^2.19.3",
+    "prop-types": "^15.6.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.10"
+    "react-router-redux": "^5.0.0-alpha.8",
+    "react-scripts": "1.0.10",
+    "react-text-mask": "^5.0.2",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

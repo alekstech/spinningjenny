@@ -11,8 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 		allowsSelfRegistration: {
 			type: DataTypes.BOOLEAN,
 			validate: {
-				isIn: [true, false],
-				msg: 'Only yes or no answers'
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
 			}
 		}
 	})

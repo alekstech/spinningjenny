@@ -1,19 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import './styles.css'
 import App from './components/App'
-import NotFound from './components/NotFound'
 import registerServiceWorker from './registerServiceWorker'
+import { Provider } from 'react-redux'
+import store from './store'
+import { ConnectedRouter } from 'react-router-redux';
+import history from './history'
 
 const Root = () => {
 	return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact component={App} />
-        <Route component={NotFound} />
-      </Switch>
-    </BrowserRouter>
+		<Provider store={store}>
+			<ConnectedRouter history={history}>
+				<Route path="/" component={App} />
+			</ConnectedRouter>
+		</Provider>
 	)
 }
 

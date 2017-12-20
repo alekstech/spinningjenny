@@ -1,0 +1,4 @@
+- Are users of the site referred to as Users or Volunteers?
+- Are we referring to areas as teams, areas, or placement areas?
+- What areas are there? (List needed.)
+- We decided to remove the Skills section of the profile. If we want to include it, I have two questions. What are the skills users can choose from? Do we want to allow an 'other' text box?
