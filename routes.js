@@ -31,7 +31,7 @@ module.exports = (app) => {
 
 	// Update a volunteer's profile information
 	app.post('/api/volunteer/:id/update', 
-		// jwtAuth,
+		jwtAuth,
 		bodyParser.json(),
 		VolunteerController.editProfile
 	)
@@ -42,7 +42,7 @@ module.exports = (app) => {
 	)
 
 	// View a volunteers's full profile
-	app.get('/api/volunteer/:id', 
+	app.get('/api/volunteer/:id', jwtAuth,
 		VolunteerController.viewProfile
 	)
 
