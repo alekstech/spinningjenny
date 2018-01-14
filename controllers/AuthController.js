@@ -1,5 +1,4 @@
-const hotp = require('otplib/hotp');
-const totp = require('otplib/totp');
+const otplib = require('otplib');
 const {
     Volunteer
 } = require('../models')
@@ -9,13 +8,26 @@ const nodemailer = require('nodemailer');
 
 module.exports = {
     async auth(req, res) {
-        try {
-            let initial = req.headers.initial.charAt(0).toUpperCase();
-            let candidates = await Volunteer.findAll({
-                where: {
-                    membershipNumber: req.headers.membershipnumber.toString()
-                }
-            })
+        if (!req.query.initial || req.query.initial.length !== 1) {
+            res.status(400).send({
+                error: 'initial must be provided'
+            });
+            return;
+        }
+        if (!req.query.membershipnumber) {
+            res.status(400).send({
+                error: 'membership number must be provided'
+            });
+            return;
+        }
+
+        let initial = req.query.initial.charAt(0).toUpperCase();
+        await Volunteer.findAll({
+            where: {
+                membershipNumber: req.query.membershipnumber.toString()
+            }
+        }).then(async (candidates) => {
+
             if (candidates.length === 0) {
                 res.status(401).send({
                     error: 'incorrect login'
@@ -23,14 +35,14 @@ module.exports = {
                 return;
             }
             if (req.query.otp) {
-                let authenticated = candidates.filter(v => hotp.check(req.query.otp, v.hsecret, v.hcounter++) || totp.check(req.query.otp, v.tsecret));
+                let authenticated = candidates.filter(v => otplib.hotp.check(req.query.otp, v.hsecret, v.hcounter++) || otplib.totp.check(req.query.otp, v.tsecret));
                 if (authenticated.length !== 1) {
                     res.status(401).send({
                         error: 'incorrect login'
                     });
                     return;
                 }
-                await authenicated[0].save({
+                authenticated[0].save({
                     fields: ['hcounter']
                 });
                 res.send(jwt.sign({
@@ -44,7 +56,7 @@ module.exports = {
                     from: config.outbound_address,
                     to: v.email,
                     subject: 'TMC Volunteers: Login in Code',
-                    text: 'Your single-use login code is: ' + hotp.generate(v.hsecret, v.hcounter++)
+                    text: 'Your single-use login code is: ' + otplib.hotp.generate(v.hsecret, ++v.hcounter)
                 })).forEach(m => transporter.sendMail(m));
                 for (let candidate of candidates) {
                     candidate.save({
@@ -55,10 +67,11 @@ module.exports = {
                     error: 'login code required'
                 });
             }
-        } catch (err) {
+        }, err => {
             res.status(500).send({
-                error: 'an error has occured trying to fetch the volunteer information'
+                error: 'an error has occured trying to fetch the volunteer information',
+                raw: err
             });
-        }
+        });
     }
 }
