@@ -187,10 +187,22 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.ARRAY(DataTypes.STRING)
 		},
 		student: {
-			type: DataTypes.STRING
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
 		},
 		employed: {
-			type: DataTypes.STRING
+			type: DataTypes.BOOLEAN,
+			validate: {
+				isIn: {
+					args: [[true, false]],
+					msg: 'Only yes or no answers'
+				}
+			}
 		},
 		motivation: {
 			type: DataTypes.STRING

@@ -5,73 +5,103 @@ const {
 const config = require('../config/config')
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const CustomError = require("../modules/CustomError")
+const app = require('../app.js')
 
 module.exports = {
-    async auth(req, res) {
-        if (!req.query.initial || req.query.initial.length !== 1) {
-            res.status(400).send({
-                error: 'initial must be provided'
-            });
-            return;
+    async authenticate(req, res, next) {
+        console.log('authenticate', 'initial', req.body.initial)
+        if (!req.body.initial || req.body.initial.length !== 1) {
+            next(new CustomError('Please provide an initial.', 401))
         }
-        if (!req.query.membershipnumber) {
-            res.status(400).send({
-                error: 'membership number must be provided'
-            });
-            return;
+        if (!req.body.membershipNumber) {
+            next(new CustomError('Please provide the membership number.', 401))
         }
 
-        let initial = req.query.initial.charAt(0).toUpperCase();
         await Volunteer.findAll({
             where: {
-                membershipNumber: req.query.membershipnumber.toString()
+                membershipNumber: req.body.membershipNumber.toString(),
+                $or: [{
+                        firstName: {
+                            $ilike: req.body.initial + '%'
+                        }
+                    },
+                    {
+                        lastName: {
+                            $ilike: req.body.initial + '%'
+                        }
+                    },
+                ]
             }
-        }).then(async (candidates) => {
+        }).then(async (volunteers) => {
+            if (volunteers.length === 0) {
+                next(new CustomError('We could not log you in. Please check your login information.', 401))
+            }
 
-            if (candidates.length === 0) {
-                res.status(401).send({
-                    error: 'incorrect login'
-                });
-                return;
-            }
-            if (req.query.otp) {
-                let authenticated = candidates.filter(v => otplib.hotp.check(req.query.otp, v.hsecret, v.hcounter++) || otplib.totp.check(req.query.otp, v.tsecret));
+            if (req.body.otp) {
+                let otp = req.body.otp.replace(/\s/g, '')
+                console.log('volunteers', volunteers)
+                console.log('otp', otp)
+                console.log('hsecret', volunteers[0].hsecret, 'hcounter', volunteers[0].hcounter)
+                let authenticated = volunteers.filter(v => otplib.hotp.check(otp, v.hsecret, v.hcounter - 1) || otplib.totp.check(req.body.otp, v.tsecret))
+
+                console.log('authenticated', authenticated, authenticated.length)
                 if (authenticated.length !== 1) {
-                    res.status(401).send({
-                        error: 'incorrect login'
-                    });
-                    return;
+                    next(new CustomError('We could not log you in. Please check your login information.', 401))
                 }
-                authenticated[0].save({
-                    fields: ['hcounter']
-                });
-                res.send(jwt.sign({
-                    volunteerId: authenticated[0].id
-                }, config.jwtSecret, {
-                    expiresIn: "30d"
-                }));
+
+                const payload = {
+                    isAdmin: authenticated[0].isAdmin,
+                    isStaff: authenticated[0].isStaff,
+                    nonAdminsCanView: authenticated[0].nonAdminsCanView,
+                    id: authenticated[0].id
+                }
+
+                const token = jwt.sign(
+                    payload,
+                    app.get('jwtSecret'), {
+                        expiresIn: '30 days'
+                    }
+                )
+
+                res.json({
+                    code: 200,
+                    status: 'OK',
+                    success: true,
+                    message: 'Volunteer verified',
+                    token: token
+                })
             } else {
-                let transporter = nodemailer.createTransport(config.mail);
-                candidates.map(v => ({
-                    from: config.outbound_address,
-                    to: v.email,
-                    subject: 'TMC Volunteers: Login in Code',
-                    text: 'Your single-use login code is: ' + otplib.hotp.generate(v.hsecret, ++v.hcounter)
-                })).forEach(m => transporter.sendMail(m));
-                for (let candidate of candidates) {
-                    candidate.save({
-                        fields: ['hcounter']
-                    });
-                }
-                res.status(401).send({
-                    error: 'login code required'
-                });
+                volunteers.forEach((volunteer) => {
+                    let transporter = nodemailer.createTransport(config.mail)
+                    volunteer.hsecret = otplib.authenticator.generateSecret()
+                    let hotp = otplib.hotp.generate(volunteer.hsecret, volunteer.hcounter++)
+                    let logger = (error, info) => {
+                        if (error) {
+                            return console.log('sendMail error', error)
+                        }
+                        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info))
+                    }
+
+                    transporter.sendMail({
+                        from: config.outbound_address,
+                        to: volunteer.email,
+                        subject: 'TMC Volunteers: Login Code',
+                        text: 'Your single-use Login Code is: ' + [hotp.slice(0, 3) + ' ' + hotp.slice(3)]
+                    }, logger)
+
+                    volunteer.save({
+                        fields: ['hcounter', 'hsecret']
+                    })
+                })
+
+                res.status(200).send({
+                    success: true,
+                    message: 'Login code sent.'
+                })
             }
         }, err => {
-            res.status(500).send({
-                error: 'an error has occured trying to fetch the volunteer information',
-                raw: err
-            });
-        });
+            next(new CustomError('We had trouble looking up your information. Please try again.', 500))
+        })
     }
 }

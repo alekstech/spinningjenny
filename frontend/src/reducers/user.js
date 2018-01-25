@@ -1,19 +1,45 @@
-function userReducer(state = {}, action) {
-	if(action.type === 'RECORDED_USER_COOKIE'){
+let initialState = {
+	'token': localStorage.getItem('token') || '', 
+	'emailedOtp': false,
+	'interestedInAdHoc': false,
+	'willingToTrain': false,
+	'strandNewsMailings': false,
+	'nonAdminsCanView': false,
+	'student': false,
+	'employed': false,
+	'province': ''
+}
+
+function userReducer(state = initialState, action) {
+	switch(action.type) {
+	case 'RECORDED_USER_COOKIE': {
 		let newState = state
 		newState.cookie = action.cookie
 		return newState
-	} else if (action.type === 'ITEMS_FETCH_DATA_SUCCESS') {
-		localStorage.setItem('id', action.items.volunteerData.id)
-		let newState = state
-		newState = {...action.items.volunteerData}
-		newState.areas = action.items.areas
-		return newState
-	} else if (action.type === 'LOG_OUT') {
-		localStorage.removeItem('id')
-		return {}
 	}
-	return state
+	case 'RECEIVED_USER_PROFILE': {
+		let areas = action.items.data.areas ? action.items.data.areas : []
+		let user = {...action.items.data.volunteerData, areas}
+		return {...state, ...user}
+	}
+	case 'RECEIVED_TOKEN': {
+		localStorage.setItem('token', action.token)
+		return {...state, token: action.token}
+	}
+	case 'LOG_OUT': {
+		localStorage.removeItem('token')
+		return {'token': ''}
+	}
+	case 'LOG_IN_ERRORED': {
+		return {...state, loginError: action.message}
+	}
+	case 'EMAILED_OTP': {
+		let newState = state
+		newState.emailedOtp = true
+		return {...state}
+	}
+	default:
+		return state
+	}
 }
-
 export default userReducer

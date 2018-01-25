@@ -1,25 +1,39 @@
-const { Volunteer, Area, AreaVolunteer } = require("../models");
-const config = require("../config/config");
+const {
+    Volunteer,
+    Area,
+    AreaVolunteer
+} = require("../models");
+const config = require("../config");
 
 let VolunteerIds = []
 let AreaIds = []
 
 module.exports = {
-  async populate(req, res) {
-    try {
-        let bulkVolunteers = await Volunteer.bulkCreate(Volunteers, {validate: true})
-        VolunteerIds = await Volunteer.findAll({attributes: ['id']})
-        let bulkAreas = await Area.bulkCreate(Areas, {validate: true})
-        AreaIds = await Area.findAll({attributes: ['id']})
-        let bulkAreaVolunteers = await AreaVolunteer.bulkCreate(AreaVolunteers(), {validate: true})
-        res.send(`Added ${AreaIds.length} Areas, ${VolunteerIds.length} Volunteers and ${bulkAreaVolunteers.length} Area Volunteers`);
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({
-        error: err
-      });
+    async populate(req, res) {
+        try {
+            let bulkVolunteers = await Volunteer.bulkCreate(Volunteers, {
+                validate: true
+            })
+            VolunteerIds = await Volunteer.findAll({
+                attributes: ['id']
+            })
+            let bulkAreas = await Area.bulkCreate(Areas, {
+                validate: true
+            })
+            AreaIds = await Area.findAll({
+                attributes: ['id']
+            })
+            let bulkAreaVolunteers = await AreaVolunteer.bulkCreate(AreaVolunteers(), {
+                validate: true
+            })
+            res.send(`Added ${AreaIds.length} Areas, ${VolunteerIds.length} Volunteers and ${bulkAreaVolunteers.length} Area Volunteers`);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send({
+                error: err
+            });
+        }
     }
-  }
 };
 
 function AreaVolunteers() {
@@ -37,24 +51,21 @@ function AreaVolunteers() {
             }
         })
         if (unique) {
-            result.push(
-                {
-                    "joined": "2007-02-15",
-                    "left": "2007-02-15",
-                    "regular": bool1,
-                    "floater": bool2,
-                    "notes": note,
-                    "AreaId": areaid,
-                    "VolunteerId": volunteerid
-                }
-            )
+            result.push({
+                "joined": "2007-02-15",
+                "left": "2007-02-15",
+                "regular": bool1,
+                "floater": bool2,
+                "notes": note,
+                "AreaId": areaid,
+                "VolunteerId": volunteerid
+            })
         }
     }
     return result
-} 
+}
 
-const Areas = [
-    {
+const Areas = [{
         "name": "front desk",
         "allowsSelfRegistration": true
     },
@@ -73,8 +84,7 @@ const Areas = [
 ]
 
 // 419 rows. From www.mockaroo.com
-const Volunteers = [
-    {
+const Volunteers = [{
         "isAdmin": false,
         "isStaff": true,
         "firstName": "Alexis",

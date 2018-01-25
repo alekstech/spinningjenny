@@ -1,18 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 // components
-import AppBar from 'material-ui/AppBar';
+import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
 import Grid from 'material-ui/Grid'
-import Snackbar from 'material-ui/Snackbar';
-import Toolbar from 'material-ui/Toolbar';
-import Tooltip from 'material-ui/Tooltip'
-import Typography from 'material-ui/Typography';
+import Snackbar from 'material-ui/Snackbar'
+import Toolbar from 'material-ui/Toolbar'
 // styles
-import Fade from 'material-ui/transitions/Fade';
+import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
-import Verified from 'mdi-material-ui/Verified'
-import AccountCardDetails from 'mdi-material-ui/AccountCardDetails'
+import tm_logo from '../assets/tm_logo.svg'
 
 const styles = {
 	flex_container: {
@@ -20,9 +18,21 @@ const styles = {
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		width: '100%',
-		height: '100%'
+		height: '64px'
+	},
+	logoContainer: {
+		maxWidth: '64px',
+		maxHeight: '64px',
+		width: '100%',
+		height: '100%',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	logoImage: {
+		maxWidth: '50px',
+		maxHeight: '50px'
 	}
-
 }
 
 class NavigationBar extends React.Component {
@@ -45,7 +55,7 @@ class NavigationBar extends React.Component {
 	}
 
 	componentWillMount() {
-		let cookie = localStorage.getItem('loggedInUser');
+		let cookie = localStorage.getItem('loggedInUser')
 		if (cookie) {
 			let newState = this.state
 			newState.loggedInUser = JSON.parse(cookie)
@@ -65,13 +75,13 @@ class NavigationBar extends React.Component {
 		event.preventDefault()
 
 		this.props.logOut()
-		localStorage.removeItem('loggedInUser');
+		localStorage.removeItem('token')
 		let newState = this.state
 		newState.loggedInUser = { 'volunteerData': {} }
 		newState.userIsLoggedIn = false
 		newState.snackbarOpen = true
 		newState.snackbarText = 'You\'ve been logged out'
-			this.setState(newState)
+		this.setState(newState)
 	}
 
 	handleChange(event) {
@@ -81,45 +91,33 @@ class NavigationBar extends React.Component {
 
 	render() {
 		return (
-			<Grid item xs={12}>
-				<AppBar position="static" color="default">
-					<Toolbar>
-						<div className={this.props.classes.flex_container}>
-							{this.props.user.id && 
-								<Typography type="title" color="inherit">
-									{this.props.user.firstName} {this.props.user.lastName}
-								</Typography>
-							}
-							<div>
-								{this.props.user.isAdmin && 
-									<Tooltip title="Admin" placement="bottom">
-										<Verified />
-									</Tooltip>
-								}
-								{this.props.user.isStaff && 
-									<Tooltip title="Staff" placement="bottom">
-										<AccountCardDetails />
-									</Tooltip>
+			<Grid container spacing={24}>
+				<Grid item xs={12}>
+					<AppBar position="static" color="default">
+						<Toolbar>
+							<div className={this.props.classes.flex_container}>
+
+								<img src={tm_logo} alt="Textile Museum Logo" style={styles.logoImage}/>
+
+								{this.props.user.id && 
+									<Button raised color="primary" onClick={this.logOut} component={Link} to={'/'}>
+										Log out
+									</Button>
 								}
 							</div>
-							{this.props.user.id && 
-								<Button type="button" onClick={this.logOut} raised color="primary">
-									Log out
-								</Button>
-							}
-						</div>
-						<Snackbar
-							open={this.state.snackbarOpen}
-							onRequestClose={this.closeSnackbar}
-							transition={Fade}
-							SnackbarContentProps={{
-								'aria-describedby': this.state.snackbarText,
-							}}
-							message={<span id="saveResult">{this.state.snackbarText}</span>}
-							action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
-						/>
-					</Toolbar>
-				</AppBar>
+							<Snackbar
+								open={this.state.snackbarOpen}
+								onRequestClose={this.closeSnackbar}
+								transition={Fade}
+								SnackbarContentProps={{
+									'aria-describedby': this.state.snackbarText,
+								}}
+								message={<span id="saveResult">{this.state.snackbarText}</span>}
+								action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
+							/>
+						</Toolbar>
+					</AppBar>
+			</Grid>
 			</Grid>
 		)
 	}
