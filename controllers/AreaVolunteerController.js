@@ -1,8 +1,4 @@
-const {
-    Area,
-    AreaVolunteer,
-    Volunteer
-} = require("../models");
+const { Area, AreaVolunteer, Volunteer } = require("../models");
 const config = require("../config");
 const fs = require('fs')
 

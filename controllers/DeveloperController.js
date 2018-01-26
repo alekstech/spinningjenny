@@ -1,6 +1,4 @@
-const {
-    Developer
-} = require('../models')
+const {Developer} = require('../models')
 const config = require('../config')
 
 module.exports = {
