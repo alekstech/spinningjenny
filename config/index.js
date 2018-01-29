@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-	env: process.env.ENV,
+	env: process.env.RUN_ENV,
 	port: process.env.PORT,
 	jwtSecret: process.env.JWT_SECRET,
 	db: {
@@ -12,7 +12,7 @@ module.exports = {
 			dialect: process.env.DIALECT,
 			host: process.env.HOST,
 			storage: path.resolve(__dirname, '../../textilemuseum.postgres'),
-			logging: console.log // console.log OR false
+			logging: false // console.log OR false
 		}
 	},
 	outbound_address: process.env.OUTBOUND_ADDRESS,

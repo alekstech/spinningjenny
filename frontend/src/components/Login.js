@@ -44,8 +44,8 @@ class Login extends React.Component {
 		this.validateInitial = this.validateInitial.bind(this)
 
 		this.state = {
-			'membershipNumber': '2778932',
-			'initial': 'L',
+			'membershipNumber': '',
+			'initial': '',
 			'otp': '',
 			'validations': {
 				membershipNumber: {
@@ -90,7 +90,6 @@ class Login extends React.Component {
 		if (!this.state.membershipNumber.length) {
 			newState.validations.membershipNumber.error = true
 			newState.validations.membershipNumber.errorMessage = 'Cannot be blank'
-			this.membershipNumber.focus()
 		} else {
 			newState.validations.membershipNumber.error = false
 			newState.validations.membershipNumber.errorMessage = ''
@@ -113,7 +112,6 @@ class Login extends React.Component {
 		if (!this.state.initial.length || !(/[A-Za-zÀ-öø-ʯ]/.test(this.state.initial))) {
 			newState.validations.initial.error = true
 			newState.validations.initial.errorMessage = 'Cannot be blank'
-			this.initial.focus()
 		} else {
 			newState.validations.initial.error = false
 			newState.validations.initial.errorMessage = ''
@@ -135,7 +133,6 @@ class Login extends React.Component {
 		if (!(/(\d){6}/.test(this.state.otp.replace(/\D/g, '')))) {
 			newState.validations.otp.error = true
 			newState.validations.otp.errorMessage = 'Must be six digits'
-			this.loginCode.focus()
 		} else {
 			newState.validations.otp.error = false
 			newState.validations.otp.errorMessage = ''

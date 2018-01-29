@@ -165,7 +165,6 @@ class EditProfile extends React.Component {
 		this.setState({ volunteer: newVolunteer })
 	}
 	flipEmployed(event, value) {
-		console.log('flipEmployed', value)
 		let newVolunteer = this.state.volunteer
 		newVolunteer.employed = value
 		this.setState({ volunteer: newVolunteer })
@@ -250,25 +249,6 @@ class EditProfile extends React.Component {
 			}
 		}
 		this.setState({ validations: newValidations })
-	}
-
-	componentWillMount () {
-		if (!this.props.user.token.length) {
-			this.props.history.push('/')
-		} else if (!this.state.volunteer.id) {
-			let options = {
-				method: 'POST',
-				body: {
-					'auth-token': this.props.user.token
-				},
-				headers: {
-					'Content-Type': 'text/plain',
-					'auth-token': this.props.user.token
-				}
-			}
-
-			this.props.getProfile('/api/volunteer', options)
-		}
 	}
 
 	componentWillReceiveProps(nextProps) {

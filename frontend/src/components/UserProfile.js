@@ -71,9 +71,6 @@ class UserProfile extends React.Component {
 	componentWillMount () {
 		let options = {
 			method: 'POST',
-			body: {
-				'auth-token': this.props.user.token
-			},
 			headers: {
 				'Content-Type': 'text/plain',
 				'auth-token': this.props.user.token

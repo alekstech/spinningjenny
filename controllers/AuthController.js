@@ -1,16 +1,13 @@
-const otplib = require('otplib');
-const {
-	Volunteer
-} = require('../models')
-const config = require('../config/config')
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const CustomError = require("../modules/CustomError")
+const otplib = require('otplib')
+const { Volunteer } = require('../models')
+const config = require('../config')
+const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+const CustomError = require('../modules/CustomError')
 const app = require('../app.js')
 
 module.exports = {
 	async authenticate (req, res, next) {
-		console.log('authenticate', 'initial', req.body.initial)
 		if (!req.body.initial || req.body.initial.length !== 1) {
 			next(new CustomError('Please provide an initial.', 401))
 		}
@@ -22,23 +19,20 @@ module.exports = {
 			where: {
 				membershipNumber: req.body.membershipNumber.toString(),
 				$or: [
-					{ firstName: { $ilike: req.body.initial + '%' } },
-					{ lastName: { $ilike: req.body.initial + '%' } },
+					{ firstName: { $iLike: req.body.initial + '%' } },
+					{ lastName: { $iLike: req.body.initial + '%' } },
 				]
 			}
 		}).then(async (volunteers) => {
 			if (volunteers.length === 0) {
 				next(new CustomError('We could not log you in. Please check your login information.', 401))
+				return
 			}
 
 			if (req.body.otp) {
 				let otp = req.body.otp.replace(/\s/g, '')
-				console.log('volunteers', volunteers)
-				console.log('otp', otp)
-				console.log('hsecret', volunteers[0].hsecret, 'hcounter', volunteers[0].hcounter)
 				let authenticated = volunteers.filter(v => otplib.hotp.check(otp, v.hsecret, v.hcounter - 1) || otplib.totp.check(req.body.otp, v.tsecret))
 				
-				console.log('authenticated', authenticated, authenticated.length)
 				if (authenticated.length !== 1) {
 					next(new CustomError('We could not log you in. Please check your login information.', 401))
 				}
@@ -95,6 +89,7 @@ module.exports = {
 				})
 			}
 		}, err => {
+			console.log(err.message)
 			next(new CustomError('We had trouble looking up your information. Please try again.', 500))
 		})
 	}

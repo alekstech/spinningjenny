@@ -9,9 +9,6 @@ import UserProfile from './UserProfile'
 import EditProfile from './EditProfile'
 import PrivateRoute from './PrivateRoute'
 import RestrictedRoute from './RestrictedRoute'
-// styles
-import './App.css'
-import '../css/global.css'
 
 class Main extends React.Component {
 	constructor (props) {

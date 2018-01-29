@@ -10,7 +10,7 @@ module.exports = class CustomError extends Error {
 		}
 
 		// custom debugging information
-		this.date = new Date()
+		this.timestamp = new Date()
 		this.statusCode = statusCode
 		this.message = message
 	}
