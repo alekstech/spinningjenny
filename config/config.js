@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+  env : process.env.RUN_ENV,
 	port: process.env.PORT,
 	jwtSecret: process.env.JWT_SECRET,
 	db: {

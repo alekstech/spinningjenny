@@ -6,6 +6,7 @@ const VolunteerController = require('./controllers/VolunteerController')
 const AreaVolunteerController = require('./controllers/AreaVolunteerController')
 const path = require('path')
 var bodyParser = require('body-parser')
+const express = require('express')
 const express_jwt = require('express-jwt')
 const config = require('./config')
 const jwtAuth = express_jwt({ secret: config.jwtSecret })
@@ -28,6 +29,7 @@ module.exports = (app) => {
 		}
 	}
 
+	app.use(express.static(path.join(__dirname, 'frontend/build')))
 	app.use(allowCrossDomain)
 
 	// Get a token
@@ -101,13 +103,15 @@ module.exports = (app) => {
 	)
 
 	// Populate database with dummy data
-	app.get('/api/populate',
-		DummyDataController.populate
-	)
+	if (config.env === 'development') {
+		app.get('/populate',
+			DummyDataController.populate
+		)
+  }
 
 	// Handle all remaining routes
 	app.get('*', (req, res) => {
-		res.sendFile(path.resolve(__dirname, '.', 'frontend/public', 'index.html'))
+		res.sendFile(path.resolve(__dirname, '.', 'frontend/build', 'index.html'))
 	})
 
 	app.use(function (err, req, res, next) {
