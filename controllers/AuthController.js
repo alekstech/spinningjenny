@@ -62,7 +62,12 @@ module.exports = {
 			} else {
 				volunteers.forEach((volunteer) => {
 					let transporter = nodemailer.createTransport(config.mail)
-					volunteer.hsecret = otplib.authenticator.generateSecret()
+					if (volunteer.hsecret === null) {
+						volunteer.hsecret = otplib.authenticator.generateSecret()
+					}
+					if (volunteer.tsecret === null) {
+						volunteer.tsecret = otplib.authenticator.generateSecret()
+					}
 					let hotp = otplib.hotp.generate(volunteer.hsecret, volunteer.hcounter++)
 					let logger = (error, info) => {
 						if (error) {
@@ -79,7 +84,7 @@ module.exports = {
 					}, logger)
 
 					volunteer.save({
-						fields: ['hcounter','hsecret']
+						fields: ['hcounter','hsecret', 'tsecret']
 					})					
 				})
 
@@ -89,8 +94,7 @@ module.exports = {
 				})
 			}
 		}, err => {
-			console.log(err.message)
-			next(new CustomError('We had trouble looking up your information. Please try again.', 500))
+			next(new CustomError('We had trouble looking up your information. Please try again.', 500, err))
 		})
 	}
 }

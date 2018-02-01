@@ -62,7 +62,7 @@ class ViewTeam extends React.Component {
 									<TableCell>{member.left}</TableCell>
 									<TableCell>{member.notes}</TableCell>
 								</TableRow>
-							);
+							)
 						})}
 					</TableBody>
 				</Table>

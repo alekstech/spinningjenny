@@ -16,19 +16,9 @@ import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import TextMaskCustom from './TextMaskCustom'
 // styles
-import grey from 'material-ui/colors/grey'
-import indigo from 'material-ui/colors/indigo'
 import withStyles from 'material-ui/styles/withStyles'
 
 const styles = {
-	avatar: {
-		left: 8, 
-		backgroundColor: indigo[500],
-	},
-	chip: {
-		margin: 4,
-		backgroundColor: grey[200]
-	},
 	row: {
 		width: '100%',
 		display: 'flex',
@@ -36,21 +26,11 @@ const styles = {
 		justifyContent: 'space-bewtween',
 		alignItems: 'flex-start'
 	},
-	skillsWrapper: {
-		display: 'flex',
-		flexWrap: 'wrap',
-	},
 	marginRight10: {
 		marginRight: '10px'
 	},
-	fullHeight: {
-		height: '100%'
-	},
 	minWidth: {
 		minWidth: 167
-	},
-	maxWidth: {
-		maxWidth: 167
 	},
 	formControl: {
 		marginTop: '1rem',
@@ -62,7 +42,6 @@ class EditProfile extends React.Component {
 	constructor (props) {
 		super(props)
 
-		this.getInitials = this.getInitials.bind(this)
 		this.handleChange = this.handleChange.bind(this)
 		this.closeSnackbar = this.closeSnackbar.bind(this)
 		this.flipInterestedInAdHoc = this.flipInterestedInAdHoc.bind(this)
@@ -76,49 +55,33 @@ class EditProfile extends React.Component {
 
 		this.state = {
 			'volunteer': {...this.props.user},
-			'updateUserProfile': this.props.updateUserProfile,
-			'validations': {},
-			'skills': ['IT', 'people skills', 'accounting', 'library', 'project management', 'restoration', 'other'],
-			'roles': ['front desk', 'docent', 'guide', 'project manager', 'other'],
-			'snackbarOpen': false,
-			'snackbarText': ''
+			'validations': {}
 		}
 	}
 
-	closeSnackbar() {
-		this.setState({
-			'snackbarText': '',
-			'snackbarOpen': false
-		})
-	}
-
-	getInitials(first, last) {
-		if (first && last) {
-			return first.charAt(0) + last.charAt(0)
-		} else if (first) {
-			return first.charAt(0)
-		} else {
-			return null
-		}
-	}
-
-	formIsInvalid() {
-		for (let property in this.state.validations) {
-			if (this.state.validations.hasOwnProperty(property)) {
-				if (this.state.validations[property].error) {
-					return true
-				}
+	componentWillMount () {
+		let options = {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'text/plain',
+				'auth-token': this.props.user.token
 			}
 		}
-		return false
+
+		this.props.getProfile('/api/volunteer', options)
 	}
 
-	validateForm(event) {
-		event.preventDefault()
-		let payload = this.state.volunteer
-		payload.phone = payload.phone.startsWith('+1') ? payload.phone.replace(/\D/g, '').slice(1) : payload.phone
-		payload.emergencyPhone = payload.emergencyPhone.startsWith('+1') ? payload.emergencyPhone.replace(/\D/g, '').slice(1) : payload.emergencyPhone
-		this.props.updateUserProfile(this.state.volunteer)
+	componentWillReceiveProps(nextProps) {
+		if (nextProps.user.id && !nextProps.ui.updateProfileLoading) {
+			this.setState({volunteer: nextProps.user})
+		}
+		if (nextProps.ui.updateProfileCompleted) {
+			this.props.updateUserProfileCompleted(false)
+			this.props.history.push('/user')
+		}
+		if (!nextProps.user.token) {
+			this.props.history.push('/')
+		}
 	}
 
 	handleChange (event, key, data) {
@@ -127,12 +90,6 @@ class EditProfile extends React.Component {
 		var newVolunteer = Object.assign({}, this.state.volunteer)
 		if (key === 'interestedInAdHoc' || key === 'willingToTrain' || key === 'strandNewsMailings' || key === 'student' || key === 'employed') {
 			event.target.value === 'on' ? event.target.value = true : event.target.value = false
-		}
-		if (key === 'role') {
-			this.state.volunteer.desiredRoles.includes(data) ? this.state.volunteer.desiredRoles.splice( this.state.volunteer.desiredRoles.indexOf(data), 1 ) : this.state.volunteer.desiredRoles.push(data)
-		}
-		if (key === 'skill') {
-			this.state.volunteer.skills.includes(data) ? this.state.volunteer.skills.splice( this.state.volunteer.skills.indexOf(data), 1 ) : this.state.volunteer.skills.push(data)
 		}
 		newVolunteer[key] = event.target.value === 'true' || event.target.value === 'false' ? JSON.parse(event.target.value) : event.target.value
 
@@ -190,8 +147,6 @@ class EditProfile extends React.Component {
 			errorMessage = 'Email addresses only'
 			regex = new RegExp('\\w+@\\w+.*')
 			break
-			// isAdmin
-			// isStaff
 		case 'mailingAddress1':
 			errorMessage = 'Letters, spaces and punctuation only'
 			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';!?-]){1,32}$')
@@ -251,10 +206,41 @@ class EditProfile extends React.Component {
 		this.setState({ validations: newValidations })
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.user) {
-			this.setState({'volunteer': {...this.props.user}})		
-		} 
+	formIsInvalid() {
+		for (let property in this.state.validations) {
+			if (this.state.validations.hasOwnProperty(property)) {
+				if (this.state.validations[property].error) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	validateForm(event) {
+		event.preventDefault()
+
+		let payload = this.state.volunteer
+		payload.phone = payload.phone.startsWith('+1') ? payload.phone.replace(/\D/g, '').slice(1) : payload.phone
+		payload.emergencyPhone = payload.emergencyPhone.startsWith('+1') ? payload.emergencyPhone.replace(/\D/g, '').slice(1) : payload.emergencyPhone
+
+		let options = {
+			method: 'POST',
+			body: JSON.stringify({
+				...payload
+			}),
+			headers: {
+				'Content-Type': 'application/json',
+				'auth-token': payload.token
+			}
+		}
+
+		this.props.updateUserProfile('/api/volunteer/' + payload.id + '/update', options)
+	}
+
+	closeSnackbar() {
+		this.props.logInErrorMessage('')
+		this.props.updateUserProfileHasErrored(false)
 	}
 
 	render() {
@@ -553,13 +539,13 @@ class EditProfile extends React.Component {
 
 					<div>
 						<Snackbar
-							open={this.state.snackbarOpen}
-							onRequestClose={this.closeSnackbar}
+							open={this.props.ui.updateProfileErrored}
 							transition={Fade}
 							SnackbarContentProps={{
-								'aria-describedby': this.state.snackbarText,
+								'aria-describedby': this.props.ui.updateProfileErrorMessage,
 							}}
-							message={<span id="saveResult">{this.state.snackbarText}</span>}
+							autoHideDuration={5000}
+							message={<span>{this.props.ui.updateProfileErrorMessage}</span>}
 							action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
 						/>
 					</div>

@@ -37,7 +37,6 @@ class Login extends React.Component {
 		this.updateMembershipNumber = this.updateMembershipNumber.bind(this)
 		this.updateInitial = this.updateInitial.bind(this)
 		this.updateOtp = this.updateOtp.bind(this)
-		this.updateOtp = this.updateOtp.bind(this)
 		this.validateMembershipNumber = this.validateMembershipNumber.bind(this)
 		this.buttonIsDisabled = this.buttonIsDisabled.bind(this)
 		this.validateOtp = this.validateOtp.bind(this)
@@ -178,7 +177,7 @@ class Login extends React.Component {
 
 	render() {
 		const items = () => {
-			if (!this.props.user.emailedOtp) {
+			if (!this.props.ui.emailedOtp) {
 				return (
 					<form onSubmit={this.logIn} key='a'>
 						<div>

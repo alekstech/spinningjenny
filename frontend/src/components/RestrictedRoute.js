@@ -11,9 +11,7 @@ const RestrictedRoute = ({ component: Component, authed, ...rest }) => (
 	authed
 		? <Component 
 			{...props} 
-			user={rest.user}
-			updateUserProfile={rest.updateUserProfile} 
-			getProfile={rest.getProfile}
+			{...rest}
 		/>
 		: <Redirect to={{ pathname: '/' }} />}
 	/>

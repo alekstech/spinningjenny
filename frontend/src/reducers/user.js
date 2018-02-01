@@ -1,6 +1,5 @@
 let initialState = {
 	'token': localStorage.getItem('token') || '', 
-	'emailedOtp': false,
 	'interestedInAdHoc': false,
 	'willingToTrain': false,
 	'strandNewsMailings': false,
@@ -12,32 +11,23 @@ let initialState = {
 
 function userReducer(state = initialState, action) {
 	switch(action.type) {
-	case 'RECORDED_USER_COOKIE': {
-		let newState = state
-		newState.cookie = action.cookie
-		return newState
-	}
-	case 'RECEIVED_USER_PROFILE': {
-		let areas = action.items.data.areas ? action.items.data.areas : []
-		let user = {...action.items.data.volunteerData, areas}
-		return {...state, ...user}
-	}
+
 	case 'RECEIVED_TOKEN': {
 		localStorage.setItem('token', action.token)
 		return {...state, token: action.token}
 	}
+		
+	case 'RECEIVED_USER_PROFILE': {
+		let areas = action.data.areas ? action.data.areas : []
+		let user = {...action.data.volunteerData, areas}
+		return {...state, ...user}
+	}
+
 	case 'LOG_OUT': {
 		localStorage.removeItem('token')
-		return {'token': ''}
+		return {...state, ...initialState}
 	}
-	case 'LOG_IN_ERRORED': {
-		return {...state, loginError: action.message}
-	}
-	case 'EMAILED_OTP': {
-		let newState = state
-		newState.emailedOtp = true
-		return {...state}
-	}
+
 	default:
 		return state
 	}

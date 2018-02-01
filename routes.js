@@ -72,7 +72,7 @@ module.exports = (app) => {
 	)
 
 	// View a volunteers's full profile
-	app.post('/api/volunteer', 
+	app.get('/api/volunteer', 
 		VolunteerController.viewProfile
 	)
 
@@ -91,18 +91,20 @@ module.exports = (app) => {
 	// Handle errors
 	app.use(function (err, req, res, next) {
 		// Log the error
-		let contents = JSON.stringify({
-			'statusCode': err.statusCode,
-			'message': err.message,
-			'stack': err.stack,
-			'timestamp': err.timestamp
-		}) + ', '
+		if (err.original.name === 'SequelizeDatabaseError') {
+			let contents = JSON.stringify({
+				'statusCode': err.statusCode,
+				'message': err.message,
+				'stack': err.stack,
+				'timestamp': err.timestamp
+			}) + ', '
 
-		fs.appendFile('./logs/routingErrors.log', contents, function(appendError) {
-			fs.writeFile('./logs/routingErrors.log', contents, function(writeError) {
-				return
+			fs.appendFile('./logs/routingErrors.log', contents, function(appendError) {
+				fs.writeFile('./logs/routingErrors.log', contents, function(writeError) {
+					return
+				})
 			})
-		})
+		}
 
 		// Delete debugging info
 		if (config.env !== 'development') {

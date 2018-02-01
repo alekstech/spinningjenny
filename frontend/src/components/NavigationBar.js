@@ -1,9 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 // components
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
 import Grid from 'material-ui/Grid'
+import { Link } from 'react-router-dom'
 import Snackbar from 'material-ui/Snackbar'
 import Toolbar from 'material-ui/Toolbar'
 // styles
@@ -19,15 +19,6 @@ const styles = {
 		alignItems: 'center',
 		width: '100%',
 		height: '64px'
-	},
-	logoContainer: {
-		maxWidth: '64px',
-		maxHeight: '64px',
-		width: '100%',
-		height: '100%',
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center'
 	},
 	logoImage: {
 		maxWidth: '50px',
@@ -64,11 +55,9 @@ class NavigationBar extends React.Component {
 		}
 	}
 
-	closeSnackbar() {
-		this.setState({
-			'snackbarText': '',
-			'snackbarOpen': false
-		})
+	handleChange(event) {
+		event.preventDefault()
+		this.setState( {id: event.target.value} )
 	}
 
 	logOut(event) {		
@@ -84,9 +73,11 @@ class NavigationBar extends React.Component {
 		this.setState(newState)
 	}
 
-	handleChange(event) {
-		event.preventDefault()
-		this.setState( {id: event.target.value} )
+	closeSnackbar() {
+		this.setState({
+			'snackbarText': '',
+			'snackbarOpen': false
+		})
 	}
 
 	render() {

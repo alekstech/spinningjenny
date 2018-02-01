@@ -1,5 +1,5 @@
 module.exports = class CustomError extends Error {
-	constructor(message = 'Oops! Something went wrong!', statusCode = 404, ...params) {
+	constructor(message = 'Oops! Something went wrong!', statusCode = 404, original = {}, ...params) {
 
 		// pass remaining arguments to parent constructor
 		super(...params)
@@ -13,5 +13,6 @@ module.exports = class CustomError extends Error {
 		this.timestamp = new Date()
 		this.statusCode = statusCode
 		this.message = message
+		this.original = original
 	}
 }

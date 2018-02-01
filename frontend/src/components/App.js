@@ -1,7 +1,7 @@
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as actionCreators from '../actions/actionCreators';
-import Main from './Main';
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as actionCreators from '../actions/actionCreators'
+import Main from './Main'
 
 function mapStateToProps(state) {
 	return {
@@ -10,9 +10,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispachToProps(dispatch) {
-	return bindActionCreators(actionCreators, dispatch);
+	return bindActionCreators(actionCreators, dispatch)
 }
 
-const App = connect(mapStateToProps, mapDispachToProps)(Main);
+const App = connect(mapStateToProps, mapDispachToProps)(Main)
 
-export default App;
+export default App

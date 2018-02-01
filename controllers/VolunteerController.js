@@ -9,15 +9,13 @@ const app = require('../app.js')
 const otplib = require('otplib')
 const nodemailer = require('nodemailer')
 const hotp = require('otplib/hotp')
-const {
-	CustomError
-} = require("../modules/CustomError")
+const CustomError = require('../modules/CustomError')
 
 module.exports = {
-	async viewProfile(req, res) {
+	async viewProfile(req, res, next) {
 		try {
 
-			let volunteerData = await Volunteer.findById(req.decoded.id);
+			let volunteerData = await Volunteer.findById(req.decoded.id)
 			let areas = await AreaVolunteer.findAll({
 				where: {
 					VolunteerId: req.decoded.id
@@ -39,32 +37,30 @@ module.exports = {
 
 		} catch (err) {
 
-			res.status(500).send({
-				code: 500,
-				success: false,
-				status: 'fail',
-				message: 'No profile information to display.'
-			})
+			next(new CustomError('We had trouble looking up your account data.', 500, err))
 
 		}
 	},
 
-	async editProfile(req, res) {
+	async editProfile(req, res, next) {
 		try {
-			let data = await Volunteer.update(req.body, {
+			let volunteerData = await Volunteer.update(req.body, {
 				where: {
-					id: req.body.id
-				}
+					id: req.decoded.id
+				},
+				fields: ['firstName', 'lastName', 'email', 'mailingAddress1', 'mailingAddress2', 'city', 'province', 'postcode', 'phone', 'emergencyName', 'emergencyPhone', 'interestedInAdHoc', 'willingToTrain', 'strandNewsMailings', 'nonAdminsCanView', 'student', 'employed'],
+				returning: true
 			})
+
 			res.send({
 				code: 200,
 				status: 'OK',
-				data
+				volunteerData: volunteerData[1][0]
 			})
 		} catch (err) {
-			res.status(500).send({
-				error: err
-			});
+
+			next(new CustomError('We had trouble saving your profile.', 500, err))
+
 		}
 	}
 }

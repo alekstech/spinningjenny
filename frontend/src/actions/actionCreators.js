@@ -1,16 +1,15 @@
 import axios from 'axios'
-import history from '../history'
-import { apiPath } from '../config'
 
 // ===================================================================
 // Get OTP
 // ===================================================================
 export function logIn(resourcePath, options) {
 	return (dispatch) => {
+
 		dispatch(logInLoading(true))
-		let url = apiPath + resourcePath
+
 		axios({
-			url,
+			url: resourcePath,
 			method: options.method,
 			headers: options.headers,
 			data: options.body
@@ -19,12 +18,12 @@ export function logIn(resourcePath, options) {
 			dispatch(logInLoading(false))
 			dispatch(logInErrorMessage(''))
 			dispatch(logInErrored(false))
-			response.data.token ? dispatch(receivedToken(response.data.token)) : dispatch(emailedOtp(response.data.message))
+			response.data.token ? dispatch(receivedToken(response.data.token)) : dispatch(emailedOtp(true))
 		})
 		.catch((error) => {
 			if (error.response.data) {
 				dispatch(logInLoading(false))
-				dispatch(logInErrorMessage(error.response.data.message))
+				dispatch(logInErrorMessage(error.response.data.message || 'Could not connect. Check your Internet connection and try again.'))
 				dispatch(logInErrored(true))
 			}
 		})
@@ -34,7 +33,7 @@ export function logIn(resourcePath, options) {
 export function logInLoading(bool) {
 	return {
 		type: 'LOG_IN_LOADING',
-		isLoading: bool
+		bool
 	}
 }
 
@@ -45,10 +44,10 @@ export function receivedToken(token) {
 	}
 }
 
-export function emailedOtp(message) {
+export function emailedOtp(bool) {
 	return {
 		type: 'EMAILED_OTP',
-		message
+		bool
 	}
 }
 
@@ -72,12 +71,10 @@ export function logInErrorMessage(message) {
 export function getProfile(resourcePath, options) {
 	return (dispatch) => {
 
-		dispatch(itemsIsLoading(true))
-
-		let url = apiPath + resourcePath
+		dispatch(getProfileIsLoading(true))
 
 		axios({
-			url,
+			url: resourcePath,
 			method: options.method,
 			headers: options.headers,
 			data: options.body
@@ -87,70 +84,93 @@ export function getProfile(resourcePath, options) {
 				throw Error(response.message)
 			}
 			if (response) {
-				dispatch(receivedUserProfile(response))
+				dispatch(receivedUserProfile(response.data))
 			}
-			dispatch(itemsIsLoading(false))
+			dispatch(getProfileIsLoading(false))
 		})
-		.catch(() => dispatch(itemsHasErrored(true)))
+		.catch(() => dispatch(getProfileHasErrored(true)))
 	}
 }
 
-export function itemsIsLoading(bool) {
+export function getProfileIsLoading(bool) {
 	return {
-		type: 'ITEMS_IS_LOADING',
-		isLoading: bool
+		type: 'GET_PROFILE_IS_LOADING',
+		bool
 	}
 }
 
-export function receivedUserProfile(items) {
+export function receivedUserProfile(data) {
 	return {
 		type: 'RECEIVED_USER_PROFILE',
-		items
+		data
 	}
 }
 
-export function itemsHasErrored(bool) {
+export function getProfileHasErrored(bool) {
 	return {
-		type: 'ITEMS_HAS_ERRORED',
-		hasErrored: bool
+		type: 'GET_PROFILE_HAS_ERRORED',
+		bool
 	}
 }
 
 // ===================================================================
 // Update profile
 // ===================================================================
-export function updateUserProfile(data) {
+export function updateUserProfile(resourcePath, options) {
 	return (dispatch) => {
-		dispatch(itemsIsLoading(true))
+		dispatch(updateUserProfileIsLoading(true))
+		dispatch(updateUserProfileCompleted(false))
 		
-		let url = apiPath + '/api/volunteer/' + data.id + '/update'
 		axios({
-			url,
-			method: 'post',
-			headers: {'auth-token': data.token},
-			data
+			url: resourcePath,
+			method: options.method,
+			headers: options.headers,
+			data: options.body
 		})
 		.then(function (response) {
-			if (response.status === 200) {
-				history.push('/')
-			} else {
-				throw Error(response.statusText)
-			}
-			return response
+			dispatch(updateUserProfileIsLoading(false))
+			dispatch(updateUserProfileErrorMessage(''))
+			dispatch(updateUserProfileHasErrored(false))
+			dispatch(updateUserProfileCompleted(true))
+			dispatch(receivedUserProfile(response.data))
 		})
-		.then((response) => response.json())
-		.then((items) => dispatch(itemsFetchDataSuccess(items)))
-		.catch(() => dispatch(itemsHasErrored(true)))
+		.catch((error) => {
+			if (error.response.data) {
+				dispatch(updateUserProfileIsLoading(false))
+				dispatch(updateUserProfileErrorMessage(error.response.data.message))
+				dispatch(updateUserProfileHasErrored(true))
+			}
+		})
 	}
 }
-
-export function itemsFetchDataSuccess(items) {
+ 
+export function updateUserProfileIsLoading(bool) {
 	return {
-		type: 'ITEMS_FETCH_DATA_SUCCESS',
-		items
+		type: 'UPDATE_USER_PROFILE_IS_LOADING',
+		bool
 	}
 }
 
+export function updateUserProfileCompleted(bool) {
+	return {
+		type: 'UPDATE_USER_PROFILE_COMPLETED',
+		bool
+	}
+}
+
+export function updateUserProfileHasErrored(bool) {
+	return {
+		type: 'UPDATE_USER_PROFILE_HAS_ERRORED',
+		bool
+	}
+}
+
+export function updateUserProfileErrorMessage(message) {
+	return {
+		type: 'UPDATE_USER_PROFILE_ERROR_MESSAGE',
+		message
+	}
+}
 
 
 // ===================================================================

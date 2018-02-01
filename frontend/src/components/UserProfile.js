@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 // components
 import Button from 'material-ui/Button'
 import Divider from 'material-ui/Divider'
-import Grid from 'material-ui/Grid'
 import Chip from 'material-ui/Chip'
-import { CircularProgress } from 'material-ui/Progress'
+import CircularProgress from 'material-ui/Progress/CircularProgress'
+import Card from 'material-ui/Card'
+import CardContent from 'material-ui/Card/CardContent'
+import Grid from 'material-ui/Grid'
 import List from 'material-ui/List'
 import ListItem from 'material-ui/List/ListItem'
 import ListItemIcon from 'material-ui/List/ListItemIcon'
@@ -14,7 +16,6 @@ import Tooltip from 'material-ui/Tooltip'
 import Typography from 'material-ui/Typography'
 // styles
 import grey from 'material-ui/colors/grey'
-import indigo from 'material-ui/colors/indigo'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
 import AccountMultiple from 'mdi-material-ui/AccountMultiple'
@@ -23,10 +24,6 @@ import NavigationClose from 'mdi-material-ui/Close'
 import Pencil from 'mdi-material-ui/Pencil'
 
 const styles = {
-	avatar: {
-		left: 8, 
-		backgroundColor: indigo[500],
-	},
 	chip: {
 		margin: 4,
 		backgroundColor: grey[200]
@@ -56,21 +53,11 @@ class UserProfile extends React.Component {
 		super(props)
 		this.formatDateMMDDYYY = this.formatDateMMDDYYY.bind(this)
 		this.formatPhone = this.formatPhone.bind(this)
-
-		this.state = {
-			areas: []
-		}
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.user && nextProps.user.areas) {
-			this.setState({areas: nextProps.user.areas})
-		} 
 	}
 
 	componentWillMount () {
 		let options = {
-			method: 'POST',
+			method: 'GET',
 			headers: {
 				'Content-Type': 'text/plain',
 				'auth-token': this.props.user.token
@@ -78,6 +65,12 @@ class UserProfile extends React.Component {
 		}
 
 		this.props.getProfile('/api/volunteer', options)
+	}
+
+	componentWillReceiveProps(nextProps) {
+		if (!nextProps.user.token) {
+			this.props.history.push('/')
+		}
 	}
 
 	formatDateMMDDYYY(date = 'n/a') {
@@ -104,6 +97,25 @@ class UserProfile extends React.Component {
 					</Grid>
 				</Grid>
 			)
+		} else if (this.props.ui.getProfileErrored === true) {
+			return (
+				<Grid container spacing={24}>
+					<Grid item xs={12}>
+						<div style={styles.spinnerContainer}>
+							<Card>
+								<CardContent>
+									<Typography type="headline" component="h2">
+										Sorry
+									</Typography>
+									<Typography component="p">
+									We could not load your profile.
+									</Typography>
+								</CardContent>
+							</Card>
+						</div>
+					</Grid>
+				</Grid>
+			)
 		} else {
 			return (
 				<Grid container spacing={24}>
@@ -112,7 +124,7 @@ class UserProfile extends React.Component {
 						<div style={styles.row}>
 							<Typography type="headline" gutterBottom={true}>{`${this.props.user.firstName} ${this.props.user.lastName}`}</Typography> 
 							<Tooltip title="Edit">
-								<Button fab color="primary" aria-label="edit" component={Link} to={`${this.props.match.url}/edit`}>
+								<Button fab color="primary" aria-label="edit" component={Link} to={`/user/edit`}>
 									<Pencil />
 								</Button>
 							</Tooltip>
@@ -202,9 +214,9 @@ class UserProfile extends React.Component {
 
 							<Divider />
 
-							{this.state.areas[0] && <Typography type="body2">Teams</Typography>}
-							{this.state.areas[0] && <List>
-								{this.state.areas.map((item, index) => {
+							{this.props.user.areas[0] && <Typography type="body2">Teams</Typography>}
+							{this.props.user.areas[0] && <List>
+								{this.props.user.areas.map((item, index) => {
 									return (
 										<ListItem key={index}>
 											<ListItemIcon>

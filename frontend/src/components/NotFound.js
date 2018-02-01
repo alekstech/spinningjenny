@@ -6,7 +6,7 @@ class NotFound extends React.Component {
 	render() {
 		return (
 			<Grid item xs={12}>
-      			<h2>Not Found</h2>
+				<h2>Not Found</h2>
 			</Grid>
 		)
 	}
