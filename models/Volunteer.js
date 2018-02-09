@@ -126,7 +126,7 @@ module.exports = (sequelize, DataTypes) => {
 					args: true
 				},
 				is: {
-					args: /^\d{10}$/,
+					args: /^\d{10,16}$/,
 					msg: 'Canadian and US numbers only'
 				}
 			}
@@ -151,7 +151,7 @@ module.exports = (sequelize, DataTypes) => {
 					args: true
 				},
 				is: {
-					args: /^\d{10}$/,
+					args: /^\d{10,16}$/,
 					msg: 'Canadian and US numbers only'
 				}
 			}

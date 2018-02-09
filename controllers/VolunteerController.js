@@ -15,7 +15,11 @@ module.exports = {
 	async viewProfile(req, res, next) {
 		try {
 
-			let volunteerData = await Volunteer.findById(req.decoded.id)
+			let volunteerData = await Volunteer.findById(req.decoded.id, {
+				attributes: {
+					exclude: ["tsecret", "hsecret", "hcounter"]
+				}
+			})
 			let areas = await AreaVolunteer.findAll({
 				where: {
 					VolunteerId: req.decoded.id

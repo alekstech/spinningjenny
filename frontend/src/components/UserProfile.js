@@ -83,7 +83,12 @@ class UserProfile extends React.Component {
 	}
 
 	formatPhone(phone = '') {
-		return phone.slice(0, 3) + '-' + phone.slice(3, 6) + '-' + phone.slice(6)
+		let extension = ''
+		if (phone.length > 10) {
+			extension = ' ext. ' + phone.slice(10)
+			phone = phone.slice(0, 10)
+		}
+		return phone.slice(0, 3) + '-' + phone.slice(3, 6) + '-' + phone.slice(6) + extension
 	}
 
 	render() {

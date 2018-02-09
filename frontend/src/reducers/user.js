@@ -1,12 +1,30 @@
 let initialState = {
-	'token': localStorage.getItem('token') || '', 
-	'interestedInAdHoc': false,
-	'willingToTrain': false,
-	'strandNewsMailings': false,
-	'nonAdminsCanView': false,
-	'student': false,
+	'areas': [],
+	'city': '',
+	'email': '',
+	'emergencyName': '',
 	'employed': false,
-	'province': ''
+	'emergencyPhone': '',
+	'firstName': '',
+	'interestedInAdHoc': false,
+	'isAdmin': false,
+	'isStaff': false,
+	'lastName': '',
+	'mailingAddress1': '',
+	'mailingAddress2': '',
+	'nonAdminsCanView': false,
+	'phone': '',
+	'postcode': '',
+	'province': '',
+	'membershipExpiry': '',
+	'membershipNumber': '',
+	'quitDate': '',
+	'startDate': '',
+	'strandNewsMailings': false,
+	'student': false,
+	'skills': [],
+	'willingToTrain': false,
+	'token': localStorage.getItem('token') || ''
 }
 
 function userReducer(state = initialState, action) {
@@ -25,7 +43,7 @@ function userReducer(state = initialState, action) {
 
 	case 'LOG_OUT': {
 		localStorage.removeItem('token')
-		return {...state, ...initialState}
+		return {...state, ...initialState, token: ''}
 	}
 
 	default:

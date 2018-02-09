@@ -10,11 +10,11 @@ import FormGroup from 'material-ui/Form/FormGroup'
 import FormHelperText from 'material-ui/Form/FormHelperText'
 import Input from 'material-ui/Input'
 import InputLabel from 'material-ui/Input/InputLabel'
+import MaskedInput from 'react-text-mask'
 import MenuItem from 'material-ui/Menu/MenuItem'
 import Select from 'material-ui/Select'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
-import TextMaskCustom from './TextMaskCustom'
 // styles
 import withStyles from 'material-ui/styles/withStyles'
 
@@ -54,7 +54,7 @@ class EditProfile extends React.Component {
 		this.formIsInvalid = this.formIsInvalid.bind(this)
 
 		this.state = {
-			'volunteer': {...this.props.user},
+			'volunteer': {},
 			'validations': {}
 		}
 	}
@@ -69,18 +69,26 @@ class EditProfile extends React.Component {
 		}
 
 		this.props.getProfile('/api/volunteer', options)
+
+		let volunteer = Object.assign({}, this.props.user)
+		volunteer.phoneExt = volunteer.phone.length > 10 ? volunteer.phone.slice(10,16) : ''
+		volunteer.emergencyPhoneExt = volunteer.emergencyPhone.length > 10 ? volunteer.emergencyPhone.slice(10,16) : ''
+		this.setState({volunteer})
 	}
 
 	componentWillReceiveProps(nextProps) {
+		if (!nextProps.user.token) {
+			this.props.history.push('/')
+		}
 		if (nextProps.user.id && !nextProps.ui.updateProfileLoading) {
-			this.setState({volunteer: nextProps.user})
+			let volunteer = Object.assign({}, nextProps.user)
+			volunteer.phoneExt = volunteer.phone.length > 10 ? volunteer.phone.slice(10,16) : ''
+			volunteer.emergencyPhoneExt = volunteer.emergencyPhone.length > 10 ? volunteer.emergencyPhone.slice(10,16) : ''
+			this.setState({volunteer})
 		}
 		if (nextProps.ui.updateProfileCompleted) {
 			this.props.updateUserProfileCompleted(false)
 			this.props.history.push('/user')
-		}
-		if (!nextProps.user.token) {
-			this.props.history.push('/')
 		}
 	}
 
@@ -172,16 +180,25 @@ class EditProfile extends React.Component {
 			errorMessage = 'Canadian numbers only'
 			regex = new RegExp('^([\\d]){10}$')
 			break
+		case 'phoneExt':
+			clean = clean.trim()
+			errorMessage = 'One to six digits'
+			regex = new RegExp('^\\d{0,6}$')
+			break
 		case 'emergencyName':
 			errorMessage = 'Letters, spaces and punctuation only'
 			regex = new RegExp('^[A-zÀ-ÿ-\'\\s]{1,35}$')
 			break
-		case 'emergencyPhone': {
+		case 'emergencyPhone':
 			clean = clean.startsWith('+1') ? clean.replace(/\D/g, '').slice(1) : clean
 			errorMessage = 'Canadian numbers only'
 			regex = new RegExp('^([\\d]){10}$')
 			break
-		}
+		case 'emergencyPhoneExt':
+			clean = clean.trim()
+			errorMessage = 'One to six digits'
+			regex = new RegExp('^\\d{0,6}$')
+			break
 		default:
 			break
 		}
@@ -222,7 +239,9 @@ class EditProfile extends React.Component {
 
 		let payload = this.state.volunteer
 		payload.phone = payload.phone.startsWith('+1') ? payload.phone.replace(/\D/g, '').slice(1) : payload.phone
+		payload.phone = payload.phone.slice(0, 10) + payload.phoneExt.trim()
 		payload.emergencyPhone = payload.emergencyPhone.startsWith('+1') ? payload.emergencyPhone.replace(/\D/g, '').slice(1) : payload.emergencyPhone
+		payload.emergencyPhone = payload.emergencyPhone.slice(0, 10) + payload.emergencyPhoneExt.trim()
 
 		let options = {
 			method: 'POST',
@@ -363,7 +382,7 @@ class EditProfile extends React.Component {
 								<Input
 									id="postcode"
 									value={this.state.volunteer.postcode}
-									inputComponent={TextMaskCustom}
+									inputComponent={MaskedInput}
 									onChange={e => this.handleChange(e, 'postcode')}
 									onBlur={e => this.validate(e, 'postcode', true)} 
 									inputProps={{
@@ -386,12 +405,12 @@ class EditProfile extends React.Component {
 						</div>
 
 						<div style={styles.row}>
-							<FormControl style={{...styles.formControl}}>
+							<FormControl style={{...styles.formControl, ...styles.marginRight10}}>
 								<InputLabel htmlFor="phone" shrink={Boolean(this.state.volunteer.phone !== '')}>Phone</InputLabel>
 								<Input
 									id="phone"
 									value={this.state.volunteer.phone}
-									inputComponent={TextMaskCustom}
+									inputComponent={MaskedInput}
 									onChange={e => this.handleChange(e, 'phone')}
 									onBlur={e => this.validate(e, 'phone', true)} 
 									inputProps={{
@@ -411,6 +430,32 @@ class EditProfile extends React.Component {
 									</FormHelperText>
 								}
 							</FormControl>
+
+							<FormControl style={{...styles.formControl}}>
+								<InputLabel htmlFor="phoneExt" shrink={Boolean(this.state.volunteer.phoneExt !== '')}>Extension</InputLabel>
+								<Input
+									id="phoneExt"
+									value={this.state.volunteer.phoneExt}
+									inputComponent={MaskedInput}
+									onChange={e => this.handleChange(e, 'phoneExt')}
+									onBlur={e => this.validate(e, 'phoneExt', false)} 
+									inputProps={{
+										'aria-label': 'Extension',
+										mask: [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/,],
+										placeholderChar: '\u2000',
+										showMask: true,
+										keepCharPositions: true
+									}}
+									error={this.state.validations.phoneExt ? this.state.validations.phoneExt.error : false}
+								/>
+								{this.state.validations.phoneExt && this.state.validations.phoneExt.error && 
+									<FormHelperText
+										error={this.state.validations.phoneExt ? this.state.validations.phoneExt.error : false}
+									>
+										{this.state.validations.phoneExt && this.state.validations.phoneExt.error ? this.state.validations.phoneExt.errorMessage : ''}
+									</FormHelperText>
+								}
+							</FormControl>
 						</div>
 
 						<div style={styles.row}>
@@ -427,12 +472,12 @@ class EditProfile extends React.Component {
 						</div>
 
 						<div style={styles.row}>
-							<FormControl style={{...styles.formControl}}>
+							<FormControl style={{...styles.formControl, ...styles.marginRight10}}>
 								<InputLabel htmlFor="emergencyPhone" shrink={Boolean(this.state.volunteer.emergencyPhone !== '')}>Emergency phone</InputLabel>
 								<Input
 									id="emergencyPhone"
 									value={this.state.volunteer.emergencyPhone}
-									inputComponent={TextMaskCustom}
+									inputComponent={MaskedInput}
 									onChange={e => this.handleChange(e, 'emergencyPhone')}
 									onBlur={e => this.validate(e, 'emergencyPhone', true)}
 									inputProps={{
@@ -449,6 +494,32 @@ class EditProfile extends React.Component {
 										error={this.state.validations.emergencyPhone ? this.state.validations.emergencyPhone.error : false}
 									>
 										{this.state.validations.emergencyPhone && this.state.validations.emergencyPhone.error ? this.state.validations.emergencyPhone.errorMessage : ''}
+									</FormHelperText>
+								}
+							</FormControl>
+
+							<FormControl style={{...styles.formControl}}>
+								<InputLabel htmlFor="emergencyPhoneExt" shrink={Boolean(this.state.volunteer.emergencyPhoneExt !== '')}>Extension</InputLabel>
+								<Input
+									id="emergencyPhoneExt"
+									value={this.state.volunteer.emergencyPhoneExt}
+									inputComponent={MaskedInput}
+									onChange={e => this.handleChange(e, 'emergencyPhoneExt')}
+									onBlur={e => this.validate(e, 'emergencyPhoneExt', false)} 
+									inputProps={{
+										'aria-label': 'Extension',
+										mask: [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/,],
+										placeholderChar: '\u2000',
+										showMask: true,
+										keepCharPositions: true
+									}}
+									error={this.state.validations.emergencyPhoneExt ? this.state.validations.emergencyPhoneExt.error : false}
+								/>
+								{this.state.validations.emergencyPhoneExt && this.state.validations.emergencyPhoneExt.error && 
+									<FormHelperText
+										error={this.state.validations.emergencyPhoneExt ? this.state.validations.emergencyPhoneExt.error : false}
+									>
+										{this.state.validations.emergencyPhoneExt && this.state.validations.emergencyPhoneExt.error ? this.state.validations.emergencyPhoneExt.errorMessage : ''}
 									</FormHelperText>
 								}
 							</FormControl>
