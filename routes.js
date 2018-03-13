@@ -20,7 +20,7 @@ var helmet = require('helmet')
 // Error 403 if too many requests in short time
 let bruteforce
 new SequelizeStore(sequelize, 'bruteStore', {
-	freeRetries: 10
+	freeRetries: 50
 }, function (store) {
 	bruteforce = new ExpressBrute(store)
 })
