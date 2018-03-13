@@ -12,8 +12,23 @@ const express = require('express')
 const fs = require('fs')
 const jwt = require('jsonwebtoken')
 const path = require('path')
+var ExpressBrute = require('express-brute')
+var SequelizeStore = require('express-brute-sequelize')
+const {sequelize} = require('./models')
+var helmet = require('helmet')
+
+// Error 403 if too many requests in short time
+let bruteforce
+new SequelizeStore(sequelize, 'bruteStore', {
+	freeRetries: 10
+}, function (store) {
+	bruteforce = new ExpressBrute(store)
+})
 
 module.exports = (app) => {
+	// Sets HTTP headers: dnsPrefetchControl, frameguard, hidePoweredBy, hsts, ieNoOpen, noSniff, xssFilter
+	app.use(helmet())
+
 	// Allow CORS between frontend and API
 	const allowCrossDomain = function(req, res, next) {
 		res.header('Access-Control-Allow-Origin', config.frontend_url)
@@ -25,6 +40,8 @@ module.exports = (app) => {
 			res.status(204).send('')
 		}
 		else {
+			bruteforce.prevent,
+
 			next()
 		}
 	}
