@@ -1,5 +1,5 @@
 const otplib = require('otplib')
-const { Volunteer } = require('../models')
+const { Volunteer, Sequelize } = require('../models')
 const config = require('../config')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
@@ -19,8 +19,8 @@ module.exports = {
 			where: {
 				membershipNumber: req.body.membershipNumber.toString(),
 				$or: [
-					{ firstName: { $iLike: req.body.initial + '%' } },
-					{ lastName: { $iLike: req.body.initial + '%' } },
+					{ firstName: { [Sequelize.Op.iLike]: req.body.initial + '%' } },
+					{ lastName: { [Sequelize.Op.iLike]: req.body.initial + '%' } },
 				]
 			}
 		}).then(async (volunteers) => {
