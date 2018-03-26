@@ -21,10 +21,12 @@ export function logIn(resourcePath, options) {
 			response.data.token ? dispatch(receivedToken(response.data.token)) : dispatch(emailedOtp(true))
 		})
 		.catch((error) => {
-			if (error.response.data) {
+			if (error.response && error.response.data) {
 				dispatch(logInLoading(false))
 				dispatch(logInErrorMessage(error.response.data.message || 'Could not connect. Check your Internet connection and try again.'))
 				dispatch(logInErrored(true))
+			} else {
+				console.log(error)
 			}
 		})
 	}
@@ -135,10 +137,12 @@ export function updateUserProfile(resourcePath, options) {
 			dispatch(receivedUserProfile(response.data))
 		})
 		.catch((error) => {
-			if (error.response.data) {
+			if (error.response && error.response.data) {
 				dispatch(updateUserProfileIsLoading(false))
 				dispatch(updateUserProfileErrorMessage(error.response.data.message))
 				dispatch(updateUserProfileHasErrored(true))
+			} else {
+				console.log(error)
 			}
 		})
 	}

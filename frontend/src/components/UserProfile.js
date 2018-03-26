@@ -67,6 +67,10 @@ class UserProfile extends React.Component {
 		this.props.getProfile('/api/volunteer', options)
 	}
 
+	componentDidMount() {
+		window.scrollTo(0, 0)
+	}
+
 	componentWillReceiveProps(nextProps) {
 		if (!nextProps.user.token) {
 			this.props.history.push('/')
@@ -76,9 +80,11 @@ class UserProfile extends React.Component {
 	formatDateMMDDYYY(date = 'n/a') {
 		if (date === 'n/a') {
 			return date
-		} else {
+		} else if (isNaN(Date.parse(date)) === false) {
 			let dateObject = new Date(date)
 			return dateObject.getFullYear() + '-' + (dateObject.getMonth() + 1) + '-' + dateObject.getDate()
+		} else {
+			return 'n/a'
 		}
 	}
 
@@ -162,9 +168,9 @@ class UserProfile extends React.Component {
 							<Typography type="body1">Member since {this.formatDateMMDDYYY(this.props.user.createdAt) || 'n/a'}</Typography>
 							<Typography type="body1" gutterBottom={true}>Volunteer since {this.formatDateMMDDYYY(this.props.user.startDate)}</Typography>
 
-							<Divider />
+							{this.props.user.skills.length > 0 &&  <Divider />}
 
-							<Typography type="body2">Skills</Typography>
+							{this.props.user.skills.length > 0 && <Typography type="body2">Skills</Typography>}
 
 							{this.props.user.skills && 
 								<div style={styles.skillsWrapper}>

@@ -195,6 +195,7 @@ class Login extends React.Component {
 						</div>
 						<div>
 							<TextField
+								type="number"
 								inputRef={(input) => { this.membershipNumber = input }}
 								autoFocus={true}
 								id="membershipNumber"
@@ -242,6 +243,7 @@ class Login extends React.Component {
 						</Typography>
 						<Divider />
 						<TextField
+							type="number"
 							inputRef={(input) => { this.loginCode = input }}
 							autoFocus={true}
 							style={styles.displayBlock}

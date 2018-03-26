@@ -10,8 +10,8 @@ import FormGroup from 'material-ui/Form/FormGroup'
 import FormHelperText from 'material-ui/Form/FormHelperText'
 import Input from 'material-ui/Input'
 import InputLabel from 'material-ui/Input/InputLabel'
-import MaskedInput from 'react-text-mask'
 import MenuItem from 'material-ui/Menu/MenuItem'
+import NumberFormat from 'react-number-format';
 import Select from 'material-ui/Select'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
@@ -76,6 +76,10 @@ class EditProfile extends React.Component {
 		this.setState({volunteer})
 	}
 
+	componentDidMount() {
+		window.scrollTo(0, 0)
+	}
+
 	componentWillReceiveProps(nextProps) {
 		if (!nextProps.user.token) {
 			this.props.history.push('/')
@@ -92,7 +96,7 @@ class EditProfile extends React.Component {
 		}
 	}
 
-	handleChange (event, key, data) {
+	handleChange (event, key) {
 		event.stopPropagation()
 
 		var newVolunteer = Object.assign({}, this.state.volunteer)
@@ -173,7 +177,7 @@ class EditProfile extends React.Component {
 			break
 		case 'postcode':
 			errorMessage = 'Canadian postcodes only'
-			regex = new RegExp('^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]\\s[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$')
+			regex = new RegExp('^[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ]\\s?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]$')
 			break
 		case 'phone':
 			clean = clean.startsWith('+1') ? clean.replace(/\D/g, '').slice(1) : clean
@@ -382,16 +386,8 @@ class EditProfile extends React.Component {
 								<Input
 									id="postcode"
 									value={this.state.volunteer.postcode}
-									inputComponent={MaskedInput}
 									onChange={e => this.handleChange(e, 'postcode')}
 									onBlur={e => this.validate(e, 'postcode', true)} 
-									inputProps={{
-										'aria-label': 'Postcode',
-										mask: [/[ABCEGHJKLMNPRSTVXY]/, /[0-9]/, /[ABCEGHJKLMNPRSTVWXYZ]/, ' ', /[0-9]/, /[ABCEGHJKLMNPRSTVWXYZ]/, /[0-9]/],
-										placeholderChar: '\u2000',
-										showMask: true,
-										keepCharPositions: true
-									}}
 									error={this.state.validations.postcode ? this.state.validations.postcode.error : false}
 								/>
 								{this.state.validations.postcode && this.state.validations.postcode.error && 
@@ -406,19 +402,21 @@ class EditProfile extends React.Component {
 
 						<div style={styles.row}>
 							<FormControl style={{...styles.formControl, ...styles.marginRight10}}>
-								<InputLabel htmlFor="phone" shrink={Boolean(this.state.volunteer.phone !== '')}>Phone</InputLabel>
+								<InputLabel htmlFor="phone" shrink={true}>Phone</InputLabel>
 								<Input
 									id="phone"
 									value={this.state.volunteer.phone}
-									inputComponent={MaskedInput}
-									onChange={e => this.handleChange(e, 'phone')}
+									inputComponent={NumberFormat}
 									onBlur={e => this.validate(e, 'phone', true)} 
 									inputProps={{
-										'aria-label': 'Phone number',
-										mask: ['+', '1', '-', /[1-9]/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],
-										placeholderChar: '\u2000',
-										showMask: true,
-										keepCharPositions: true
+										format: "+1 (###) ###-####",
+										mask: " ",
+										allowEmptyFormatting: true,
+										onValueChange: (values, e) => {
+											e.target.value = values.value
+											this.handleChange(e, 'phone')
+										},
+										type: "tel"
 									}}
 									error={this.state.validations.phone ? this.state.validations.phone.error : false}
 								/>
@@ -436,15 +434,17 @@ class EditProfile extends React.Component {
 								<Input
 									id="phoneExt"
 									value={this.state.volunteer.phoneExt}
-									inputComponent={MaskedInput}
-									onChange={e => this.handleChange(e, 'phoneExt')}
+									inputComponent={NumberFormat}
 									onBlur={e => this.validate(e, 'phoneExt', false)} 
 									inputProps={{
-										'aria-label': 'Extension',
-										mask: [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/,],
-										placeholderChar: '\u2000',
-										showMask: true,
-										keepCharPositions: true
+										format: "######",
+										mask: " ",
+										allowEmptyFormatting: true,
+										onValueChange: (values, e) => {
+											e.target.value = values.value
+											this.handleChange(e, 'phoneExt')
+										},
+										type: "tel"
 									}}
 									error={this.state.validations.phoneExt ? this.state.validations.phoneExt.error : false}
 								/>
@@ -473,19 +473,21 @@ class EditProfile extends React.Component {
 
 						<div style={styles.row}>
 							<FormControl style={{...styles.formControl, ...styles.marginRight10}}>
-								<InputLabel htmlFor="emergencyPhone" shrink={Boolean(this.state.volunteer.emergencyPhone !== '')}>Emergency phone</InputLabel>
+								<InputLabel htmlFor="emergencyPhone" shrink={true}>Emergency phone</InputLabel>
 								<Input
 									id="emergencyPhone"
 									value={this.state.volunteer.emergencyPhone}
-									inputComponent={MaskedInput}
-									onChange={e => this.handleChange(e, 'emergencyPhone')}
-									onBlur={e => this.validate(e, 'emergencyPhone', true)}
+									inputComponent={NumberFormat}
+									onBlur={e => this.validate(e, 'emergencyPhone', true)} 
 									inputProps={{
-										'aria-label': 'Emergency phone',
-										mask: ['+', '1', '-', /[1-9]/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/],
-										placeholderChar: '\u2000',
-										showMask: true,
-										keepCharPositions: true
+										format: "+1 (###) ###-####",
+										mask: " ",
+										allowEmptyFormatting: true,
+										onValueChange: (values, e) => {
+											e.target.value = values.value
+											this.handleChange(e, 'emergencyPhone')
+										},
+										type: "tel"
 									}}
 									error={this.state.validations.emergencyPhone ? this.state.validations.emergencyPhone.error : false}
 								/>
@@ -502,16 +504,19 @@ class EditProfile extends React.Component {
 								<InputLabel htmlFor="emergencyPhoneExt" shrink={Boolean(this.state.volunteer.emergencyPhoneExt !== '')}>Extension</InputLabel>
 								<Input
 									id="emergencyPhoneExt"
+									type="tel"
 									value={this.state.volunteer.emergencyPhoneExt}
-									inputComponent={MaskedInput}
-									onChange={e => this.handleChange(e, 'emergencyPhoneExt')}
+									inputComponent={NumberFormat}
 									onBlur={e => this.validate(e, 'emergencyPhoneExt', false)} 
 									inputProps={{
-										'aria-label': 'Extension',
-										mask: [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/,],
-										placeholderChar: '\u2000',
-										showMask: true,
-										keepCharPositions: true
+										format: "######",
+										mask: " ",
+										allowEmptyFormatting: true,
+										onValueChange: (values, e) => {
+											e.target.value = values.value
+											this.handleChange(e, 'phoneExt')
+										},
+										type: "tel"
 									}}
 									error={this.state.validations.emergencyPhoneExt ? this.state.validations.emergencyPhoneExt.error : false}
 								/>

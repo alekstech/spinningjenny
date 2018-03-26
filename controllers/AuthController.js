@@ -18,7 +18,7 @@ module.exports = {
 		await Volunteer.findAll({
 			where: {
 				membershipNumber: req.body.membershipNumber.toString(),
-				$or: [
+				[Sequelize.Op.or]: [
 					{ firstName: { [Sequelize.Op.iLike]: req.body.initial + '%' } },
 					{ lastName: { [Sequelize.Op.iLike]: req.body.initial + '%' } },
 				]
@@ -69,6 +69,11 @@ module.exports = {
 						volunteer.tsecret = otplib.authenticator.generateSecret()
 					}
 					let hotp = otplib.hotp.generate(volunteer.hsecret, volunteer.hcounter++)
+
+					if (config.env === 'development') {
+						console.log(hotp)
+					}
+
 					let logger = (error, info) => {
 						if (error) {
 							return console.log('sendMail error', error)

@@ -36,8 +36,14 @@ function userReducer(state = initialState, action) {
 	}
 		
 	case 'RECEIVED_USER_PROFILE': {
-		let areas = action.data.areas ? action.data.areas : []
-		let user = {...action.data.volunteerData, areas}
+		// Set null keys to initial values, except token
+		Object.keys(initialState).forEach((key) => {
+			if (key !== 'token' && action.data.volunteerData[key] === null) {
+				action.data.volunteerData[key] = initialState[key]
+			} 
+		})
+
+		let user = {...action.data.volunteerData, areas: action.data.areas ? action.data.areas : []}
 		return {...state, ...user}
 	}
 
