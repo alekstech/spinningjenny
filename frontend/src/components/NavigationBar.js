@@ -88,7 +88,8 @@ class NavigationBar extends React.Component {
 						<Toolbar>
 							<div className={this.props.classes.flex_container}>
 
-								<img src={tm_logo} alt="Textile Museum Logo" style={styles.logoImage}/>
+								<img src={tm_logo} alt="" style={styles.logoImage}/>
+ 								Textile Museum of Canada Volunteers
 
 								{this.props.user.id && 
 									<Button raised color="primary" onClick={this.logOut} component={Link} to={'/'}>
