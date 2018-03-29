@@ -28,7 +28,6 @@ Object.keys(db).forEach(function (modelName) {
 })
 
 db.AreaVolunteer.removeAttribute('id')
-db.AwardType.removeAttribute('id')
 
 db.sequelize = sequelize
 db.Sequelize = Sequelize
