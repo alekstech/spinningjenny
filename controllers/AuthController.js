@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 const CustomError = require('../modules/CustomError')
 const app = require('../app.js')
+const obscureEmail = require('./StringFunctions.js').obscureEmail
 
 module.exports = {
 	async authenticate (req, res, next) {
@@ -60,6 +61,7 @@ module.exports = {
 					token: token
 				})
 			} else {
+				let email = ''
 				volunteers.forEach((volunteer) => {
 					let transporter = nodemailer.createTransport(config.mail)
 					if (volunteer.hsecret === null) {
@@ -90,12 +92,15 @@ module.exports = {
 
 					volunteer.save({
 						fields: ['hcounter','hsecret', 'tsecret']
-					})					
+					})
+
+					email = volunteer.email
 				})
 
 				res.status(200).send({
 					success: true, 
-					message: 'Login code sent.'
+					message: 'Login code sent.',
+					email: obscureEmail(email)
 				})
 			}
 		}, err => {

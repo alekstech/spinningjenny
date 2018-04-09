@@ -1,6 +1,7 @@
 let initialState = {
 	logInLoading: false,
 	emailedOtp: false,
+	maskedEmail: '',
 	logInErrorMessage: '',
 	logInErrored: false,
 	getProfileLoading: false,
@@ -19,6 +20,10 @@ function uiReducer(state = initialState, action) {
 	}
 	case 'EMAILED_OTP': {
 		return {...state, emailedOtp: action.bool}
+	}
+	case 'RECEIVED_MASKED_EMAIL': {
+		console.log('rece', action)
+		return {...state, maskedEmail: action.email}
 	}
 	case 'LOG_IN_ERROR_MESSAGE': {
 		return {...state, logInErrorMessage: action.message}

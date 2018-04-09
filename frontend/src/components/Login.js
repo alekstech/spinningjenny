@@ -239,7 +239,7 @@ class Login extends React.Component {
 						Check your email
 						</Typography>
 						<Typography type="subheading" gutterBottom>
-						We sent an email with a Login Code to your address. Check your inbox and enter the Login Code below.
+						We sent an email with a Login Code to {this.props.ui.maskedEmail}. Check your inbox and enter the Login Code below.
 						</Typography>
 						<Divider />
 						<TextField

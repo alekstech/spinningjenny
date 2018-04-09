@@ -18,7 +18,12 @@ export function logIn(resourcePath, options) {
 			dispatch(logInLoading(false))
 			dispatch(logInErrorMessage(''))
 			dispatch(logInErrored(false))
-			response.data.token ? dispatch(receivedToken(response.data.token)) : dispatch(emailedOtp(true))
+			if (response.data.token) {
+				dispatch(receivedToken(response.data.token))
+			} else {
+				dispatch(emailedOtp(true))
+				dispatch(receivedMaskedEmail(response.data.email))
+			}
 		})
 		.catch((error) => {
 			if (error.response && error.response.data) {
@@ -50,6 +55,13 @@ export function emailedOtp(bool) {
 	return {
 		type: 'EMAILED_OTP',
 		bool
+	}
+}
+
+export function receivedMaskedEmail(email) {
+	return {
+		type: 'RECEIVED_MASKED_EMAIL',
+		email
 	}
 }
 
