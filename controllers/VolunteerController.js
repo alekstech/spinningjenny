@@ -17,6 +17,7 @@ module.exports = {
 
 			let volunteerData = await Volunteer.findById(req.decoded.id, {
 				attributes: {
+					include: ["id", "city", "email", "emergencyName", "employed", "emergencyPhone", "firstName", "interestedInAdHoc", "isAdmin", "isStaff", "lastName", "mailingAddress1", "mailingAddress2", "nonAdminsCanView", "phone", "postcode", "province", "membershipExpiry", "membershipNumber", "quitDate", "startDate", "strandNewsMailings", "student", "skills", "willingToTrain"],
 					exclude: ["tsecret", "hsecret", "hcounter"]
 				}
 			})
