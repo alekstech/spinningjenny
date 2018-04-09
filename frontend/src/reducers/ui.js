@@ -22,7 +22,6 @@ function uiReducer(state = initialState, action) {
 		return {...state, emailedOtp: action.bool}
 	}
 	case 'RECEIVED_MASKED_EMAIL': {
-		console.log('rece', action)
 		return {...state, maskedEmail: action.email}
 	}
 	case 'LOG_IN_ERROR_MESSAGE': {

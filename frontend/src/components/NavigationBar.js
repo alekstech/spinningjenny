@@ -2,6 +2,7 @@ import React from 'react'
 // components
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
+import IconButton from 'material-ui/IconButton'
 import Grid from 'material-ui/Grid'
 import { Link } from 'react-router-dom'
 import Snackbar from 'material-ui/Snackbar'
@@ -10,6 +11,7 @@ import Toolbar from 'material-ui/Toolbar'
 import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
+import Logout from 'mdi-material-ui/Logout'
 import tm_logo from '../assets/tm_logo.svg'
 
 const styles = {
@@ -82,19 +84,19 @@ class NavigationBar extends React.Component {
 
 	render() {
 		return (
-			<Grid container spacing={24}>
+			<Grid container spacing={0}>
 				<Grid item xs={12}>
 					<AppBar position="static" color="default">
 						<Toolbar>
 							<div className={this.props.classes.flex_container}>
 
-								<img src={tm_logo} alt="" style={styles.logoImage}/>
+								<img src={tm_logo} alt="Two hands with interwoven fingers" style={styles.logoImage}/>
  								Textile Museum of Canada Volunteers
 
 								{this.props.user.id && 
-									<Button raised color="primary" onClick={this.logOut} component={Link} to={'/'}>
-										Log out
-									</Button>
+									<IconButton aria-label="Log out" component={Link} to={`/`} onClick={this.logOut}>
+										<Logout />
+									</IconButton>
 								}
 							</div>
 							<Snackbar
@@ -109,7 +111,7 @@ class NavigationBar extends React.Component {
 							/>
 						</Toolbar>
 					</AppBar>
-			</Grid>
+				</Grid>
 			</Grid>
 		)
 	}

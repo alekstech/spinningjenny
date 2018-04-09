@@ -195,7 +195,7 @@ class Login extends React.Component {
 						</div>
 						<div>
 							<TextField
-								type="number"
+								type="tel"
 								inputRef={(input) => { this.membershipNumber = input }}
 								autoFocus={true}
 								id="membershipNumber"
@@ -270,7 +270,7 @@ class Login extends React.Component {
 		}
 
 		return (
-			<Grid container spacing={24} style={styles.screenCover}>
+			<Grid container spacing={0} style={styles.screenCover}>
 				<Grid item xs={1} sm={2} md={4} lg={4} xl={4}></Grid>
 				<Grid item xs={10} sm={8} md={4} lg={4} xl={4} style={styles.screenCover}>
 					<div style={styles.fullHeightColumn}>
@@ -299,4 +299,4 @@ class Login extends React.Component {
 	}
 }
 
-export default withStyles(styles)(Login)
+export default withStyles(styles, { withTheme: true })(Login)
