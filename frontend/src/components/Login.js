@@ -195,7 +195,7 @@ class Login extends React.Component {
 						</div>
 						<div>
 							<TextField
-								type="number"
+								type="tel"
 								inputRef={(input) => { this.membershipNumber = input }}
 								autoFocus={true}
 								id="membershipNumber"
@@ -299,4 +299,4 @@ class Login extends React.Component {
 	}
 }
 
-export default withStyles(styles)(Login)
+export default withStyles(styles, { withTheme: true })(Login)
