@@ -45,6 +45,9 @@ const styles = {
 		height: '100vh',
 		justifyContent: 'center',
 		alignItems: 'center'
+	},
+	marginTop10: {
+		marginTop: '10px'
 	}
 }
 
@@ -100,7 +103,7 @@ class UserProfile extends React.Component {
 	render() {
 		if (this.props.user.id === undefined) {
 			return (
-				<Grid container spacing={24}>
+				<Grid container spacing={0}>
 					<Grid item xs={12}>
 						<div style={styles.spinnerContainer}>
 							<CircularProgress />
@@ -110,7 +113,7 @@ class UserProfile extends React.Component {
 			)
 		} else if (this.props.ui.getProfileErrored === true) {
 			return (
-				<Grid container spacing={24}>
+				<Grid container spacing={0}>
 					<Grid item xs={12}>
 						<div style={styles.spinnerContainer}>
 							<Card>
@@ -129,10 +132,10 @@ class UserProfile extends React.Component {
 			)
 		} else {
 			return (
-				<Grid container spacing={24}>
+				<Grid container spacing={0}>
 					<Grid item xs={1} sm={2} md={4} lg={4} xl={4}></Grid>
 					<Grid item xs={10} sm={8} md={4} lg={4} xl={4}>
-						<div style={styles.row}>
+						<div style={{...styles.row, ...styles.marginTop10}}>
 							<Typography type="headline" gutterBottom={true}>{`${this.props.user.firstName} ${this.props.user.lastName}`}</Typography> 
 							<Tooltip title="Edit">
 								<Button fab color="primary" aria-label="edit" component={Link} to={`/user/edit`}>
@@ -152,6 +155,10 @@ class UserProfile extends React.Component {
 							<Typography type="body1">{this.props.user.mailingAddress2}</Typography>
 							<Typography type="body1">{this.props.user.city}</Typography>
 							<Typography type="body1">{this.props.user.province} {this.props.user.postcode}</Typography>
+
+							<Divider />
+
+							<Typography type="body2">Phone</Typography>
 							<Typography type="body1" gutterBottom={true}>{this.formatPhone(this.props.user.phone)}</Typography>
 
 							<Divider />
@@ -213,13 +220,13 @@ class UserProfile extends React.Component {
 									<ListItemIcon>
 										{(this.props.user.student && <NavigationCheck />) || <NavigationClose />}
 									</ListItemIcon>
-									<ListItemText primary="In education" />
+									<ListItemText primary="In school" />
 								</ListItem>
 								<ListItem>
 									<ListItemIcon>
 										{(this.props.user.employed && <NavigationCheck />) || <NavigationClose />}
 									</ListItemIcon>
-									<ListItemText primary="In employment" />
+									<ListItemText primary="Currently employed" />
 								</ListItem>
 							</List>
 
