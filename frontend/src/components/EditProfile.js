@@ -275,7 +275,7 @@ class EditProfile extends React.Component {
 
 	render() {
 		return (
-			<Grid container spacing={24}>
+			<Grid container spacing={0}>
 				<Grid item xs={1} sm={2} md={4} lg={4} xl={4}></Grid>
 				<Grid item xs={10} sm={8} md={4} lg={4} xl={4}>
 
