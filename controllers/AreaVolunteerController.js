@@ -5,6 +5,8 @@ const fs = require('fs')
 module.exports = {
     async viewTeam(req, res) {
         try {
+            console.log('viewTeam', req)
+
             // First, check who's asking
             let id = req.header('id')
 
