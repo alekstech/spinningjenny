@@ -3,6 +3,7 @@ const config = require('./config')
 
 // controllers
 const AuthController = require('./controllers/AuthController')
+const AreaVolunteerController = require('./controllers/AreaVolunteerController')
 const DummyDataController = require('./controllers/DummyDataController')
 const VolunteerController = require('./controllers/VolunteerController')
 
@@ -99,6 +100,11 @@ module.exports = (app) => {
 			DummyDataController.populate
 		)
 	}
+
+	// View a volunteers's full profile
+	app.get('/api/team', 
+		AreaVolunteerController.viewTeam
+	)
 
 	// Handle all remaining routes
 	app.get('*', (req, res) => {
