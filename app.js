@@ -8,7 +8,7 @@ var pjson = require('./package.json')
 require('./routes')(app)
 app.set('jwtSecret', config.jwtSecret)
 
-sequelize.sync({force: false}) // {force: true} to clear db
+sequelize.sync({force: false, logging: console.log}) // {force: true} to clear db
 	.then(() => {
 		console.log('Postgresql connection has been established successfully.')
 		app.listen(config.port)
