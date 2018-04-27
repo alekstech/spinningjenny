@@ -65,7 +65,7 @@ module.exports = (app) => {
 			// Verify secret and check expiry
 			jwt.verify(token, app.get('jwtSecret'), function(err, decoded) {
 				if (err) {
-					return res.json({ success: false, message: 'Failed to authenticate volunteer information.' })
+					return res.status(401).json({ success: false, message: 'Failed to authenticate volunteer information.' })
 				} else {
 					req.decoded = decoded
 					next()

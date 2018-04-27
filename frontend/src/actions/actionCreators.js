@@ -94,10 +94,9 @@ export function getProfile(resourcePath, options) {
 			data: options.body
 		})
 		.then((response) => {
-			if (response.success === false) {
+			if (response.status !== 200) {
 				throw Error(response.message)
-			}
-			if (response) {
+			} else {
 				dispatch(receivedUserProfile(response.data))
 			}
 			dispatch(getProfileIsLoading(false))
