@@ -1,18 +1,19 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 // components
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
-import Drawer from 'material-ui/Drawer'
+import SwipeableDrawer from 'material-ui/SwipeableDrawer'
 import IconButton from 'material-ui/IconButton'
 import Grid from 'material-ui/Grid'
-import { Link } from 'react-router-dom'
 import Snackbar from 'material-ui/Snackbar'
 import Toolbar from 'material-ui/Toolbar'
 // styles
 import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
-import Close from 'mdi-material-ui/Close'
+import AccountMultipleIcon from 'mdi-material-ui/AccountMultiple'
+import CloseIcon from 'mdi-material-ui/Close'
 import Logout from 'mdi-material-ui/Logout'
 import Menu from 'mdi-material-ui/Menu'
 import tm_logo from '../assets/tm_logo.svg'
@@ -38,7 +39,8 @@ class NavigationBar extends React.Component {
 		this.handleChange = this.handleChange.bind(this)
 		this.logOut = this.logOut.bind(this)
 		this.closeSnackbar = this.closeSnackbar.bind(this)
-		this.toggleDrawer = this.toggleDrawer.bind(this)
+		this.openDrawer = this.openDrawer.bind(this)
+		this.closeDrawer = this.closeDrawer.bind(this)
 
 		this.state = {
 			'id': '',
@@ -62,9 +64,15 @@ class NavigationBar extends React.Component {
 		}
 	}
 
-	toggleDrawer(open) {
+	openDrawer() {
 		this.setState({
-			'drawer': open
+			'drawer': true
+		})
+	}
+
+	closeDrawer() {
+		this.setState({
+			'drawer': false
 		})
 	}
 
@@ -105,37 +113,57 @@ class NavigationBar extends React.Component {
 								Textile Museum of Canada Volunteers
 
 								{this.props.user.id && 
-									<IconButton aria-label="Open menu">
+									<IconButton aria-label="Open menu" onClick={this.openDrawer}>
 										<Menu />
 									</IconButton>
 								}
 							</div>
 							<Snackbar
 								open={this.state.snackbarOpen}
-								onRequestClose={this.closeSnackbar}
+								onClose={this.closeSnackbar}
 								transition={Fade}
 								SnackbarContentProps={{
 									'aria-describedby': this.state.snackbarText,
 								}}
 								message={<span id="saveResult">{this.state.snackbarText}</span>}
-								action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
+								action={[
+									<Button key="dismiss" color="secondary" size="small" onClick={this.closeSnackbar}>
+										Dismiss
+									</Button>,
+									<IconButton
+										key="close"
+										aria-label="Dismiss"
+										color="inherit"
+										onClick={this.closeSnackbar}
+									>
+										<CloseIcon />
+									</IconButton>,
+								]}
 							/>
 						</Toolbar>
 					</AppBar>
-					<Drawer
+					<SwipeableDrawer
 						anchor="right"
 						open={this.state.drawer}
-						onClose={this.toggleDrawer(false)}
-						onOpen={this.toggleDrawer(true)}
+						onClose={this.closeDrawer}
+						onOpen={this.openDrawer}
 					>
-						<IconButton aria-label="Close menu" onClick={this.toggleDrawer(false)}>
-							<Close />
+						<IconButton aria-label="Close menu" onClick={this.closeDrawer}>
+							<CloseIcon />
 						</IconButton>
+
+						{this.props.user.isAdmin && 
+							<Button aria-label="Teams" component={Link} to={`/teams`}>
+								Teams
+								<AccountMultipleIcon />
+							</Button>
+						}
+
 						<Button aria-label="Log out" href='/' onClick={this.logOut}>
 							Log out
-							<Menu />
+							<Logout />
 						</Button>
-					</Drawer>
+					</SwipeableDrawer>
 				</Grid>
 			</Grid>
 		)
