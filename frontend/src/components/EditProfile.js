@@ -8,6 +8,7 @@ import FormControl from 'material-ui/Form/FormControl'
 import FormControlLabel from 'material-ui/Form/FormControlLabel'
 import FormGroup from 'material-ui/Form/FormGroup'
 import FormHelperText from 'material-ui/Form/FormHelperText'
+import IconButton from 'material-ui/IconButton'
 import Input from 'material-ui/Input'
 import InputLabel from 'material-ui/Input/InputLabel'
 import MenuItem from 'material-ui/Menu/MenuItem'
@@ -18,6 +19,8 @@ import TextField from 'material-ui/TextField'
 // styles
 import withStyles from 'material-ui/styles/withStyles'
 import './EditProfile.css'
+// icons
+import CloseIcon from 'mdi-material-ui/Close'
 
 const styles = {
 	row: {
@@ -634,7 +637,20 @@ class EditProfile extends React.Component {
 							}}
 							autoHideDuration={5000}
 							message={<span>{this.props.ui.updateProfileErrorMessage}</span>}
-							action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
+							
+							action={[
+								<Button key="dismiss" color="secondary" size="small" onClick={this.closeSnackbar}>
+									Dismiss
+								</Button>,
+								<IconButton
+									key="close"
+									aria-label="Dismiss"
+									color="inherit"
+									onClick={this.closeSnackbar}
+								>
+									<CloseIcon />
+								</IconButton>,
+							]}
 						/>
 					</div>
 				</Grid>
