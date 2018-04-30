@@ -6,32 +6,46 @@ module.exports = {
     // aka get coordinator's teams and team member info
     async viewTeam(req, res, next) {
         try {
-            let areas = Areas SELECT 
-                where id.coordinator = true
-                fields ['name', 'id']
-
-            let volunteers = AreaVolunteers SELECT where id IS IN areas ORDER BY name of the area
-
-            return volunteers
-
-
-            let team = await AreaVolunteer.findAll({
+            let requestee = await Volunteer.findOne({
                 where: {
-                    AreaId: req.params.id
-                },
-                fields: ['firstName', 'lastName', 'email', 'mailingAddress1', 'mailingAddress2', 'city', 'province', 'postcode', 'phone', 'emergencyName', 'emergencyPhone', 'interestedInAdHoc', 'willingToTrain', 'strandNewsMailings', 'nonAdminsCanView', 'student', 'employed'],
-                include: [{
-                        model: Area,
-                        attributes: ["name"]
-                    },
-                    {
-                        model: Volunteer
-                    }
-                ]
+                    'id': req.decoded.id
+                }
             })
-            res.send(team)
-            return
 
+            let areas
+            if (requestee.isStaff || requestee.isAdmin) {
+                areas = await Areas.findAll()
+            } else {
+                areas = await AreaVolunteers.findAll({
+                    where: {
+                        'VolunteerId': req.decoded.id,
+                        'coordinator': true
+                    },
+                    fields: ['AreaId']
+                })
+            }
+
+            let volunteers = await AreaVolunteers.findAll({
+                where: {
+                    'id': {
+                        [Op.in]: areas
+                    }
+                },
+                include: [{
+                    model: Volunteer,
+                    attributes: ['firstName', 'lastName', 'email', 'mailingAddress1', 'mailingAddress2', 'city', 'province', 'postcode', 'phone', 'emergencyName', 'emergencyPhone', 'interestedInAdHoc', 'willingToTrain', 'strandNewsMailings', 'nonAdminsCanView', 'student', 'employed'],
+                    
+                }],
+                order: {
+                    {model: Task, as: 'Task'}, 'ASC'
+                }
+            })
+
+            res.send({
+                code: 200,
+                status: 'OK',
+                team: volunteers
+            })
         } catch (err) {
 
             next(new CustomError('We had trouble getting your team info.', 500, err))
