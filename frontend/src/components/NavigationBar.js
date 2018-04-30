@@ -2,6 +2,7 @@ import React from 'react'
 // components
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
+import Drawer from 'material-ui/Drawer'
 import IconButton from 'material-ui/IconButton'
 import Grid from 'material-ui/Grid'
 import { Link } from 'react-router-dom'
@@ -11,7 +12,9 @@ import Toolbar from 'material-ui/Toolbar'
 import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
+import Close from 'mdi-material-ui/Close'
 import Logout from 'mdi-material-ui/Logout'
+import Menu from 'mdi-material-ui/Menu'
 import tm_logo from '../assets/tm_logo.svg'
 
 const styles = {
@@ -35,6 +38,7 @@ class NavigationBar extends React.Component {
 		this.handleChange = this.handleChange.bind(this)
 		this.logOut = this.logOut.bind(this)
 		this.closeSnackbar = this.closeSnackbar.bind(this)
+		this.toggleDrawer = this.toggleDrawer.bind(this)
 
 		this.state = {
 			'id': '',
@@ -43,7 +47,8 @@ class NavigationBar extends React.Component {
 				'volunteerData': {}
 			},
 			'snackbarOpen': false,
-			'snackbarText': ''
+			'snackbarText': '',
+			'drawer': false
 		}
 	}
 
@@ -55,6 +60,12 @@ class NavigationBar extends React.Component {
 			newState.userIsLoggedIn = true
 			this.setState(newState)
 		}
+	}
+
+	toggleDrawer(open) {
+		this.setState({
+			'drawer': open
+		})
 	}
 
 	handleChange(event) {
@@ -91,11 +102,11 @@ class NavigationBar extends React.Component {
 							<div className={this.props.classes.flex_container}>
 
 								<img src={tm_logo} alt="Two hands with interwoven fingers" style={styles.logoImage}/>
- 								Textile Museum of Canada Volunteers
+								Textile Museum of Canada Volunteers
 
 								{this.props.user.id && 
-									<IconButton aria-label="Log out" component={Link} to={`/`} onClick={this.logOut}>
-										<Logout />
+									<IconButton aria-label="Open menu">
+										<Menu />
 									</IconButton>
 								}
 							</div>
@@ -111,6 +122,20 @@ class NavigationBar extends React.Component {
 							/>
 						</Toolbar>
 					</AppBar>
+					<Drawer
+						anchor="right"
+						open={this.state.drawer}
+						onClose={this.toggleDrawer(false)}
+						onOpen={this.toggleDrawer(true)}
+					>
+						<IconButton aria-label="Close menu" onClick={this.toggleDrawer(false)}>
+							<Close />
+						</IconButton>
+						<Button aria-label="Log out" href='/' onClick={this.logOut}>
+							Log out
+							<Menu />
+						</Button>
+					</Drawer>
 				</Grid>
 			</Grid>
 		)
