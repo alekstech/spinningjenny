@@ -3,107 +3,39 @@ const config = require("../config");
 const fs = require('fs')
 
 module.exports = {
-    async viewTeam(req, res) {
+    // aka get coordinator's teams and team member info
+    async viewTeam(req, res, next) {
         try {
-            console.log('viewTeam', req)
+            let areas = Areas SELECT 
+                where id.coordinator = true
+                fields ['name', 'id']
 
-            // First, check who's asking
-            let id = req.header('id')
+            let volunteers = AreaVolunteers SELECT where id IS IN areas ORDER BY name of the area
 
-            // If no ID, return
-            if (id === undefined) {
-                res.send(403, {
-                    message: 'Forbidden'
-                })
-                return
-            } else {
-                // If ID, get status
-                let profile = await Volunteer.findOne({
-                    where: {
-                        'id': id
+            return volunteers
+
+
+            let team = await AreaVolunteer.findAll({
+                where: {
+                    AreaId: req.params.id
+                },
+                fields: ['firstName', 'lastName', 'email', 'mailingAddress1', 'mailingAddress2', 'city', 'province', 'postcode', 'phone', 'emergencyName', 'emergencyPhone', 'interestedInAdHoc', 'willingToTrain', 'strandNewsMailings', 'nonAdminsCanView', 'student', 'employed'],
+                include: [{
+                        model: Area,
+                        attributes: ["name"]
                     },
-                    attributes: [
-                        'isStaff',
-                        'isAdmin'
-                    ]
-                })
-                let coordinator = await AreaVolunteer.findOne({
-                    where: {
-                        VolunteerId: id,
-                        'AreaId': req.params.id
-                    },
-                    attributes: [
-                        'coordinator'
-                    ]
-                })
-
-                console.log('id:', id)
-                console.log('profile:', profile)
-                console.log('coordinator:', coordinator.dataValues.coordinator)
-
-                // Check if isStaff or isAdmin
-                if (profile.isAdmin || profile.isStaff) {
-                    let team = await AreaVolunteer.findAll({
-                        where: {
-                            AreaId: req.params.id
-                        },
-                        include: [{
-                                model: Area,
-                                attributes: ["name"]
-                            },
-                            {
-                                model: Volunteer
-                            }
-                        ]
-                    })
-                    res.send(team)
-                    return
-                }
-                // Check if coordinator 
-                else if (coordinator.dataValues.coordinator) {
-                    let team = await AreaVolunteer.findAll({
-                        where: {
-                            AreaId: req.params.id
-                        },
-                        include: [{
-                                model: Area,
-                                attributes: ["name"]
-                            },
-                            {
-                                model: Volunteer
-                            }
-                        ]
-                    })
-                    res.send(team)
-                    return
-                }
-                // Or send only public info
-                else {
-                    let team = await AreaVolunteer.findAll({
-                        where: {
-                            AreaId: req.params.id
-                        },
-                        include: [{
-                                model: Area,
-                                attributes: ["name"]
-                            },
-                            {
-                                model: Volunteer
-                            }
-                        ]
-                    })
-                    res.send(team)
-                    return
-                }
-            }
+                    {
+                        model: Volunteer
+                    }
+                ]
+            })
+            res.send(team)
+            return
 
         } catch (err) {
-            console.log(err);
-            res.status(500).send({
-                error: err
-            });
+
+            next(new CustomError('We had trouble getting your team info.', 500, err))
+
         }
     }
-
-    // Edit team info
 };
