@@ -16,7 +16,7 @@ class Main extends React.Component {
 				<ConnectNavigationBar></ConnectNavigationBar>
 				<Switch>
 					<Route path="/" exact render={ () => (<Login {...this.props} />) }/>
-					<RestrictedRoute {...this.props} authed={this.props.user.token.length !== 0} path='/teams/:id' component={ViewTeam} />
+					<RestrictedRoute {...this.props} authed={this.props.user.token.length !== 0} path='/teams' component={ViewTeam} />
 					<RestrictedRoute {...this.props} authed={this.props.user.token.length !== 0} path='/user/edit' component={EditProfile} />
 					<RestrictedRoute {...this.props} authed={this.props.user.token.length !== 0} path='/user' component={UserProfile} />
 					<Route component={NotFound} />
