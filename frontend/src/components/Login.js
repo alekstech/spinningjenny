@@ -225,7 +225,7 @@ class Login extends React.Component {
 
 						<Button 
 							type="submit" 
-							raised 
+							variant="raised"
 							color="primary"
 							disabled={this.buttonIsDisabled()}>
 							Next
@@ -259,7 +259,7 @@ class Login extends React.Component {
 
 						<Button 
 							type="submit" 
-							raised 
+							variant="raised" 
 							color="primary"
 							disabled={this.buttonIsDisabled()}>
 							Next
