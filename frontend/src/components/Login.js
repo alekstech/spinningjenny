@@ -3,6 +3,7 @@ import React from 'react'
 import Button from 'material-ui/Button'
 import Divider from 'material-ui/Divider'
 import Grid from 'material-ui/Grid'
+import IconButton from 'material-ui/IconButton'
 import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 import Typography from 'material-ui/Typography'
@@ -10,6 +11,8 @@ import Typography from 'material-ui/Typography'
 import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 import ReactCSSTransitionReplace from 'react-css-transition-replace'
+// icons
+import CloseIcon from 'mdi-material-ui/Close'
 
 const styles = {
 	screenCover: {
@@ -291,7 +294,19 @@ class Login extends React.Component {
 							}}
 							autoHideDuration={5000}
 							message={<span>{this.props.ui.logInErrorMessage}</span>}
-							action={<Button color="accent" dense onClick={this.closeSnackbar}>Dismiss</Button>}
+							action={[
+								<Button key="dismiss" color="secondary" size="small" onClick={this.closeSnackbar}>
+									Dismiss
+								</Button>,
+								<IconButton
+									key="close"
+									aria-label="Dismiss"
+									color="inherit"
+									onClick={this.closeSnackbar}
+								>
+									<CloseIcon />
+								</IconButton>,
+							]}
 						/>
 				</Grid>
 			</Grid>
