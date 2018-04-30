@@ -49,7 +49,7 @@ class ListTeams extends React.Component {
 				<Button 
 					onClick={this.handleSubmit}
 					type="submit" 
-					raised 
+					variant="raised" 
 					color="primary">
 					See teams
 				</Button>
