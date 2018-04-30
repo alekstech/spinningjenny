@@ -620,7 +620,7 @@ class EditProfile extends React.Component {
 							/>
 						</FormGroup>
 
-						<Button type="submit" raised color="primary" disabled={this.formIsInvalid()}>
+						<Button type="submit" variant="raised" color="primary" disabled={this.formIsInvalid()}>
 							Save
 						</Button>
 					</form>
