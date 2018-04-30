@@ -23,10 +23,11 @@ class ViewTeam extends React.Component {
 	componentWillMount() {
 		const _this = this
 		axios({
-			method: 'get',
-			url: 'http://localhost:5035/api/teams/' + _this.props.match.params.id,
+			method: 'POST',
+			url: 'http://localhost:5035/api/teams',
 			headers: {
-				id: _this.props.user.id
+				'Content-Type': 'text/plain',
+				'auth-token': this.props.user.token
 			}
 		})
 		.then(function (response) {
