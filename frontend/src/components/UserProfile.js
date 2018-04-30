@@ -138,7 +138,7 @@ class UserProfile extends React.Component {
 						<div style={{...styles.row, ...styles.marginTop10}}>
 							<Typography type="headline" gutterBottom={true}>{`${this.props.user.firstName} ${this.props.user.lastName}`}</Typography> 
 							<Tooltip title="Edit">
-								<Button fab color="primary" aria-label="edit" component={Link} to={`/user/edit`}>
+								<Button variant="fab" color="primary" aria-label="edit" component={Link} to={`/user/edit`}>
 									<Pencil />
 								</Button>
 							</Tooltip>
