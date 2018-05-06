@@ -7,6 +7,7 @@ import SwipeableDrawer from 'material-ui/SwipeableDrawer'
 import IconButton from 'material-ui/IconButton'
 import Grid from 'material-ui/Grid'
 import Snackbar from 'material-ui/Snackbar'
+import SwipeableDrawer from 'material-ui/SwipeableDrawer'
 import Toolbar from 'material-ui/Toolbar'
 // styles
 import Fade from 'material-ui/transitions/Fade'
