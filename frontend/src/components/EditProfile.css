@@ -1,0 +1,18 @@
+.form .row {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.form .row .half-column {
+	width: 50%;
+}
+
+@media (min-width: 576px) {
+	.form .row .half-column {
+		width: 100%;
+	}
+
+}

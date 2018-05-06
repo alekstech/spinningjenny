@@ -17,6 +17,7 @@ import Snackbar from 'material-ui/Snackbar'
 import TextField from 'material-ui/TextField'
 // styles
 import withStyles from 'material-ui/styles/withStyles'
+import './EditProfile.css'
 
 const styles = {
 	row: {
@@ -157,15 +158,15 @@ class EditProfile extends React.Component {
 			break
 		case 'email':
 			errorMessage = 'Email addresses only'
-			regex = new RegExp('\\w+@\\w+.*')
+			regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 			break
 		case 'mailingAddress1':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';!?-]){1,32}$')
+			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';.!?-]){1,32}$')
 			break
 		case 'mailingAddress2':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';!?-]){0,32}$')
+			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';.!?-]){0,32}$')
 			break
 		case 'city':
 			errorMessage = 'Letters, spaces and punctuation only'
@@ -238,6 +239,12 @@ class EditProfile extends React.Component {
 		return false
 	}
 
+	onKeyPress(event) {
+		if (event.which === 13 && event.target.type !== 'submit') {
+			event.preventDefault()
+		}
+	}
+
 	validateForm(event) {
 		event.preventDefault()
 
@@ -272,7 +279,7 @@ class EditProfile extends React.Component {
 				<Grid item xs={1} sm={2} md={4} lg={4} xl={4}></Grid>
 				<Grid item xs={10} sm={8} md={4} lg={4} xl={4}>
 
-					<form onSubmit={e => this.validateForm(e)}>
+					<form onSubmit={this.validateForm} onKeyPress={this.onKeyPress} className="form">
 
 						<div style={styles.row}>
 							<TextField
@@ -287,7 +294,9 @@ class EditProfile extends React.Component {
 								helperText={this.state.validations.firstName && this.state.validations.firstName.error ? this.state.validations.firstName.errorMessage : ''}
 								style={styles.marginRight10}
 							/>
+						</div>
 
+						<div style={styles.row}>
 							<TextField
 								id="lastName"
 								label="Last name"
@@ -352,7 +361,7 @@ class EditProfile extends React.Component {
 							/>
 						</div>
 
-						<div style={styles.row}>
+						<div className="row half-column">
 							<FormControl style={{...styles.marginRight10, ...styles.minWidth, ...styles.formControl}}>
 								<InputLabel htmlFor="province">Province</InputLabel>
 								<Select
@@ -380,7 +389,8 @@ class EditProfile extends React.Component {
 								<MenuItem value={'other'}>other</MenuItem>
 								</Select>
 							</FormControl>
-
+							</div>
+							<div className="row half-column">
 							<FormControl style={{...styles.formControl}}>
 								<InputLabel htmlFor="postcode" shrink={Boolean(this.state.volunteer.postcode)}>Postcode</InputLabel>
 								<Input
@@ -400,7 +410,7 @@ class EditProfile extends React.Component {
 							</FormControl>
 						</div>
 
-						<div style={styles.row}>
+						<div className="row half-column">
 							<FormControl style={{...styles.formControl, ...styles.marginRight10}}>
 								<InputLabel htmlFor="phone" shrink={true}>Phone</InputLabel>
 								<Input
@@ -428,7 +438,8 @@ class EditProfile extends React.Component {
 									</FormHelperText>
 								}
 							</FormControl>
-
+						</div>
+						<div className="row half-column">
 							<FormControl style={{...styles.formControl}}>
 								<InputLabel htmlFor="phoneExt" shrink={Boolean(this.state.volunteer.phoneExt !== '')}>Extension</InputLabel>
 								<Input
@@ -499,7 +510,8 @@ class EditProfile extends React.Component {
 									</FormHelperText>
 								}
 							</FormControl>
-
+						</div>
+						<div className="row half-column">
 							<FormControl style={{...styles.formControl}}>
 								<InputLabel htmlFor="emergencyPhoneExt" shrink={Boolean(this.state.volunteer.emergencyPhoneExt !== '')}>Extension</InputLabel>
 								<Input
@@ -514,7 +526,7 @@ class EditProfile extends React.Component {
 										allowEmptyFormatting: true,
 										onValueChange: (values, e) => {
 											e.target.value = values.value
-											this.handleChange(e, 'phoneExt')
+											this.handleChange(e, 'emergencyPhoneExt')
 										},
 										type: "tel"
 									}}
@@ -591,7 +603,7 @@ class EditProfile extends React.Component {
 										value={this.state.volunteer.student.toString()}
 									/>
 								}
-								label="In education"
+								label="In school"
 							/>
 						</FormGroup>
 
@@ -604,7 +616,7 @@ class EditProfile extends React.Component {
 										value={this.state.volunteer.employed.toString()}
 									/>
 								}
-								label="In employment"
+								label="Currently employed"
 							/>
 						</FormGroup>
 
