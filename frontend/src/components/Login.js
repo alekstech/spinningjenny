@@ -270,7 +270,7 @@ class Login extends React.Component {
 		}
 
 		return (
-			<Grid container spacing={24} style={styles.screenCover}>
+			<Grid container spacing={0} style={styles.screenCover}>
 				<Grid item xs={1} sm={2} md={4} lg={4} xl={4}></Grid>
 				<Grid item xs={10} sm={8} md={4} lg={4} xl={4} style={styles.screenCover}>
 					<div style={styles.fullHeightColumn}>
