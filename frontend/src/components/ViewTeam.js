@@ -34,8 +34,7 @@ class ViewTeam extends React.Component {
 			_this.setState( {team: response.data.team} )
 		})
 		.catch((error) => {
-			console.log(error)			
-			throw error
+			// display UI error?
 		})
 	}
 
