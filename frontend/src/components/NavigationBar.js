@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 // components
 import AppBar from 'material-ui/AppBar'
 import Button from 'material-ui/Button'
-import SwipeableDrawer from 'material-ui/SwipeableDrawer'
 import IconButton from 'material-ui/IconButton'
 import Grid from 'material-ui/Grid'
 import Snackbar from 'material-ui/Snackbar'
@@ -12,6 +11,7 @@ import Toolbar from 'material-ui/Toolbar'
 import Fade from 'material-ui/transitions/Fade'
 import withStyles from 'material-ui/styles/withStyles'
 // icons
+import AccountIcon from 'mdi-material-ui/Account'
 import AccountMultipleIcon from 'mdi-material-ui/AccountMultiple'
 import CloseIcon from 'mdi-material-ui/Close'
 import Logout from 'mdi-material-ui/Logout'
@@ -151,6 +151,11 @@ class NavigationBar extends React.Component {
 						<IconButton aria-label="Close menu" onClick={this.closeDrawer}>
 							<CloseIcon />
 						</IconButton>
+
+						<Button aria-label="My profile" component={Link} to={`/user`}>
+							My profile
+							<AccountIcon />
+						</Button>
 
 						{this.props.user.isAdmin && 
 							<Button aria-label="Teams" component={Link} to={`/teams`}>
