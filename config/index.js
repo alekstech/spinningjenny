@@ -11,8 +11,7 @@ module.exports = {
 		options: {
 			dialect: process.env.DIALECT,
 			host: process.env.HOST,
-			storage: path.resolve(__dirname, '../../textilemuseum.postgres'),
-			logging: false // console.log OR false
+			storage: path.resolve(__dirname, '../../textilemuseum.postgres')
 		}
 	},
 	outbound_address: process.env.OUTBOUND_ADDRESS,

@@ -3,7 +3,7 @@ const config = require('./config')
 
 // controllers
 const AuthController = require('./controllers/AuthController')
-const AreaVolunteerController = require('./controllers/AreaVolunteerController')
+const TeamsController = require('./controllers/Teams')
 const DummyDataController = require('./controllers/DummyDataController')
 const VolunteerController = require('./controllers/VolunteerController')
 
@@ -21,7 +21,7 @@ var helmet = require('helmet')
 // Error 403 if too many requests in short time
 let bruteforce
 new SequelizeStore(sequelize, 'bruteStore', {
-	freeRetries: 50
+	freeRetries: 5000
 }, function (store) {
 	bruteforce = new ExpressBrute(store)
 })
@@ -38,11 +38,11 @@ module.exports = (app) => {
 
 		// Intercept OPTIONS method
 		if ('OPTIONS' === req.method) {
+			bruteforce.prevent,
 			res.status(204).send('')
 		}
 		else {
 			bruteforce.prevent,
-
 			next()
 		}
 	}
@@ -102,8 +102,9 @@ module.exports = (app) => {
 	}
 
 	// View a volunteers's full profile
-	app.get('/api/team', 
-		AreaVolunteerController.viewTeam
+	app.get('/api/teams', 
+		bodyParser.json(),
+		TeamsController.viewTeam
 	)
 
 	// Handle all remaining routes

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // ===================================================================
-// Get OTP
+// Auth
 // ===================================================================
 export function logIn(resourcePath, options) {
 	return (dispatch) => {
@@ -80,8 +80,14 @@ export function logInErrorMessage(message) {
 	}
 }
 
+export function logOut() {
+	return {
+		type: 'LOG_OUT'
+	}
+}
+
 // ===================================================================
-// Get volunteer profile
+// User Profile
 // ===================================================================
 export function getProfile(resourcePath, options) {
 	return (dispatch) => {
@@ -127,9 +133,6 @@ export function getProfileHasErrored(bool) {
 	}
 }
 
-// ===================================================================
-// Update profile
-// ===================================================================
 export function updateUserProfile(resourcePath, options) {
 	return (dispatch) => {
 		dispatch(updateUserProfileIsLoading(true))
@@ -190,10 +193,34 @@ export function updateUserProfileErrorMessage(message) {
 
 
 // ===================================================================
-// Log out
+// Teams
 // ===================================================================
-export function logOut() {
-	return {
-		type: 'LOG_OUT'
-	}
-}
+// export function getUsersTeams(resourcePath, options) {
+// 	return (dispatch) => {
+
+// 		dispatch(fetchingTeams(true))
+
+// 		axios({
+// 			url: resourcePath,
+// 			method: options.method,
+// 			headers: options.headers,
+// 			data: options.body,
+// 			timeout: 5000
+// 		})
+// 		.then((response) => {
+// 			dispatch(fetchTeamsError({
+// 				error: false,
+// 				message: ''
+// 			}))
+// 			dispatch(usersTeams(response.data))
+// 			dispatch(fetchingTeams(false))
+// 		})
+// 		.catch((error) => {
+// 			dispatch(fetchingTeams(false))
+// 			dispatch(fetchTeamsError({
+// 				error: true,
+// 				message: 'We could not fetch your teams'
+// 			}))
+// 		})
+// 	}
+// }

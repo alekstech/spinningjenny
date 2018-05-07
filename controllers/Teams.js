@@ -1,6 +1,7 @@
-const { Area, AreaVolunteer, Volunteer } = require("../models");
+const { Area, AreaVolunteer, Volunteer, Sequelize } = require("../models");
 const config = require("../config");
 const fs = require('fs')
+const CustomError = require('../modules/CustomError')
 
 module.exports = {
     // aka get coordinator's teams and team member info
@@ -14,7 +15,7 @@ module.exports = {
 
             let areas
             if (requestee.isStaff || requestee.isAdmin) {
-                areas = await Areas.findAll()
+                areas = await Area.findAll()
             } else {
                 areas = await AreaVolunteers.findAll({
                     where: {
@@ -25,21 +26,20 @@ module.exports = {
                 })
             }
 
-            let volunteers = await AreaVolunteers.findAll({
+            console.log(areas[0].id)
+            let volunteers = await AreaVolunteer.findAll({
                 where: {
-                    'id': {
-                        [Op.in]: areas
+                    'AreaId': {
+                        [Sequelize.Op.in]: areas.map(area => area.id)
                     }
                 },
                 include: [{
-                    model: Volunteer,
-                    attributes: ['firstName', 'lastName', 'email', 'mailingAddress1', 'mailingAddress2', 'city', 'province', 'postcode', 'phone', 'emergencyName', 'emergencyPhone', 'interestedInAdHoc', 'willingToTrain', 'strandNewsMailings', 'nonAdminsCanView', 'student', 'employed'],
-                    
-                }],
-                order: {
-                    {model: Task, as: 'Task'}, 'ASC'
-                }
+					model: Volunteer,
+					attributes: ["firstName", "lastName"]
+				}]
             })
+
+            console.log('volunteers', volunteers)
 
             res.send({
                 code: 200,

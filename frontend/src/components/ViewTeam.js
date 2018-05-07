@@ -23,7 +23,7 @@ class ViewTeam extends React.Component {
 	componentWillMount() {
 		const _this = this
 		axios({
-			method: 'POST',
+			method: 'GET',
 			url: 'http://localhost:5035/api/teams',
 			headers: {
 				'Content-Type': 'text/plain',
@@ -31,9 +31,10 @@ class ViewTeam extends React.Component {
 			}
 		})
 		.then(function (response) {
-			_this.setState( {team: response.data} )
+			_this.setState( {team: response.data.team} )
 		})
 		.catch((error) => {
+			console.log(error)			
 			throw error
 		})
 	}

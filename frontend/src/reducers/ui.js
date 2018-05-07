@@ -14,7 +14,7 @@ let initialState = {
 function uiReducer(state = initialState, action) {
 	switch(action.type) {
 	
-	// Log in
+	// Auth
 	case 'LOG_IN_LOADING': {
 		return {...state, logInLoading: action.bool}
 	}
@@ -30,16 +30,18 @@ function uiReducer(state = initialState, action) {
 	case 'LOG_IN_ERRORED': {
 		return {...state, logInErrored: action.bool}
 	}
+	case 'LOG_OUT': {
+		localStorage.removeItem('token')
+		return {...state, ...initialState}
+	}
 
-	// Get profile
+	// User profile
 	case 'GET_PROFILE_IS_LOADING': {
 		return {...state, getProfileLoading: action.bool}
 	}
 	case 'GET_PROFILE_HAS_ERRORED': {
 		return {...state, getProfileErrored: action.bool}
 	}
-
-	// Update profile
 	case 'UPDATE_USER_PROFILE_IS_LOADING': {
 		return {...state, updateProfileLoading: action.bool}
 	}
@@ -53,11 +55,7 @@ function uiReducer(state = initialState, action) {
 		return {...state, updateProfileErrorMessage: action.message}
 	}
 
-	//Log out
-	case 'LOG_OUT': {
-		localStorage.removeItem('token')
-		return {...state, ...initialState}
-	}
+	// Teams
 
 	default:
 		return state
