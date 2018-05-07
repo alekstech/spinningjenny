@@ -6,18 +6,21 @@ import App from './components/App'
 import registerServiceWorker from './registerServiceWorker'
 import { MuiThemeProvider } from 'material-ui/styles'
 import { Provider } from 'react-redux'
-import store from './store'
+import {store, persistor} from './store'
 import { ConnectedRouter } from 'react-router-redux';
 import history from './history'
 import theme from './css/MuiTheme.js'
+import { PersistGate } from 'redux-persist/integration/react'
 
 const Root = () => {
 	return (
 		<MuiThemeProvider theme={theme}>
 			<Provider store={store}>
-				<ConnectedRouter history={history}>
-					<Route path="/" component={App} />
-				</ConnectedRouter>
+				<PersistGate loading={null} persistor={persistor}>
+					<ConnectedRouter history={history}>
+						<Route path="/" component={App} />
+					</ConnectedRouter>
+				</PersistGate>
 			</Provider>
 		</MuiThemeProvider>
 	)

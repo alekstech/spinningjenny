@@ -1,4 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
 // import the root reducer
 import rootReducer from './reducers/index'
@@ -13,9 +15,18 @@ const composeEnhancers = composeWithDevTools({
   // Specify name here, actionsBlacklist, actionsCreators and other options if needed
 })
 
-const store = createStore(rootReducer, defaultState, composeEnhancers(
+const persistConfig = {
+	key: 'spinningjenny',
+	storage
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+const store = createStore(persistedReducer, defaultState, composeEnhancers(
 	applyMiddleware(thunk)
 ))
+
+let persistor = persistStore(store)
 
 if(module.hot) {
 	module.hot.accept('./reducers/', () => {
@@ -24,4 +35,4 @@ if(module.hot) {
 	})
 }
 
-export default store
+export { store, persistor }

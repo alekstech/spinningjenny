@@ -152,19 +152,19 @@ class NavigationBar extends React.Component {
 							<CloseIcon />
 						</IconButton>
 
-						<Button aria-label="My profile" component={Link} to={`/user`}>
+						<Button aria-label="My profile" component={Link} to={`/user`} onClick={this.closeDrawer}>
 							My profile
 							<AccountIcon />
 						</Button>
 
 						{this.props.user.isAdmin && 
-							<Button aria-label="Teams" component={Link} to={`/teams`}>
+							<Button aria-label="Teams" component={Link} to={`/teams`} onClick={this.closeDrawer}>
 								Teams
 								<AccountMultipleIcon />
 							</Button>
 						}
 
-						<Button aria-label="Log out" href='/' onClick={this.logOut}>
+						<Button aria-label="Log out" href='/' onClick={this.logOut} onClick={this.closeDrawer}>
 							Log out
 							<Logout />
 						</Button>
