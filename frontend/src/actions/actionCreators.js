@@ -15,7 +15,6 @@ export function logIn(resourcePath, options) {
 			data: options.body
 		})
 		.then((response) => {
-			console.log('logIn', response)
 			dispatch(logInLoading(false))
 			dispatch(logInErrorMessage(''))
 			dispatch(logInErrored(false))

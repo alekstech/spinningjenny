@@ -5,6 +5,7 @@ const fs = require('fs')
 module.exports = {
     // aka get coordinator's teams and team member info
     async viewTeam(req, res, next) {
+        console.log('viewTeam')
         try {
             let requestee = await Volunteer.findOne({
                 where: {
@@ -41,6 +42,8 @@ module.exports = {
                 }
             })
 
+
+            console.log('volunteers', volunteers)
             res.send({
                 code: 200,
                 status: 'OK',

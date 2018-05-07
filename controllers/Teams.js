@@ -26,7 +26,6 @@ module.exports = {
                 })
             }
 
-            console.log(areas[0].id)
             let volunteers = await AreaVolunteer.findAll({
                 where: {
                     'AreaId': {
@@ -38,8 +37,6 @@ module.exports = {
 					attributes: ["firstName", "lastName"]
 				}]
             })
-
-            console.log('volunteers', volunteers)
 
             res.send({
                 code: 200,
