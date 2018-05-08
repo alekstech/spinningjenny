@@ -67,5 +67,40 @@ module.exports = {
 			next(new CustomError('We had trouble saving your profile.', 500, err))
 
 		}
+	},
+
+	async getProfileById(req, res, next) {
+		try {
+
+			let volunteerData = await Volunteer.findById(req.params.id, {
+				attributes: {
+					include: ["id", "city", "email", "emergencyName", "employed", "emergencyPhone", "firstName", "interestedInAdHoc", "isAdmin", "isStaff", "lastName", "mailingAddress1", "mailingAddress2", "nonAdminsCanView", "phone", "postcode", "province", "membershipExpiry", "membershipNumber", "quitDate", "startDate", "strandNewsMailings", "student", "skills", "willingToTrain"],
+					exclude: ["tsecret", "hsecret", "hcounter"]
+				}
+			})
+			let areas = await AreaVolunteer.findAll({
+				where: {
+					VolunteerId: req.params.id
+				},
+				include: [{
+					model: Area,
+					attributes: ["name"]
+				}]
+			})
+
+			res.status(200).send({
+				code: 200,
+				success: true,
+				status: 'OK',
+				message: 'Volunteer data received',
+				volunteerData,
+				areas
+			})
+
+		} catch (err) {
+
+			next(new CustomError('We had trouble looking up your account data.', 500, err))
+
+		}
 	}
 }
