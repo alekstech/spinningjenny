@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 // components
 import Grid from 'material-ui/Grid'
@@ -50,18 +51,31 @@ class ViewTeam extends React.Component {
 							<TableCell>Joined</TableCell>
 							<TableCell>Left</TableCell>
 							<TableCell>Notes</TableCell>
+							<TableCell></TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{this.state.team.map((member, index) => {
 							return (
 								<TableRow key={index}>
-									<TableCell>{member.Volunteer.firstName} {member.Volunteer.lastName}</TableCell>
-									<TableCell>{(member.floater && <NavigationCheck />) || <NavigationClose />}</TableCell>
-									<TableCell>{(member.regular && <NavigationCheck />) || <NavigationClose />}</TableCell>
-									<TableCell>{member.joined}</TableCell>
-									<TableCell>{member.left}</TableCell>
-									<TableCell>{member.notes}</TableCell>
+									<TableCell component={Link} to={`/user?id=${member.VolunteerId}`}>
+										{member.Volunteer.firstName} {member.Volunteer.lastName}
+									</TableCell>
+									<TableCell>
+										{(member.floater && <NavigationCheck />) || <NavigationClose />}
+									</TableCell>
+									<TableCell>
+										{(member.regular && <NavigationCheck />) || <NavigationClose />}
+									</TableCell>
+									<TableCell>
+										{member.joined}
+									</TableCell>
+									<TableCell>
+										{member.left}
+									</TableCell>
+									<TableCell>
+										{member.notes}
+									</TableCell>
 								</TableRow>
 							)
 						})}

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import queryString from 'query-string'
 // components
 import Button from 'material-ui/Button'
 import Divider from 'material-ui/Divider'
@@ -67,7 +68,12 @@ class UserProfile extends React.Component {
 			}
 		}
 
-		this.props.getProfile('/api/volunteer', options)
+		let id = queryString.parse(this.props.location.search).id
+		if (id) {
+			this.props.getProfile(`/api/volunteer/${id}`, options)
+		} else {
+			this.props.getProfile('/api/me', options)
+		}
 	}
 
 	componentDidMount() {

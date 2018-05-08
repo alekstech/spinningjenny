@@ -72,7 +72,7 @@ class EditProfile extends React.Component {
 			}
 		}
 
-		this.props.getProfile('/api/volunteer', options)
+		this.props.getProfile('/api/me', options)
 
 		let volunteer = Object.assign({}, this.props.user)
 		volunteer.phoneExt = volunteer.phone.length > 10 ? volunteer.phone.slice(10,16) : ''

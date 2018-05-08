@@ -90,8 +90,13 @@ module.exports = (app) => {
 	)
 
 	// View a volunteers's full profile
-	app.get('/api/volunteer', 
+	app.get('/api/me', 
 		VolunteerController.viewProfile
+	)
+
+	// View a volunteers's full profile
+	app.get('/api/volunteer/:id', 
+		VolunteerController.getProfileById
 	)
 
 	// Populate database with dummy data
