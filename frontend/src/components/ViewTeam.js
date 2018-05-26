@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -18,6 +19,9 @@ import IconButton from 'material-ui/IconButton';
 import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from 'mdi-material-ui/Delete';
 import FilterIcon from 'mdi-material-ui/Filter';
+// icons
+import NavigationCheck from 'mdi-material-ui/Check'
+import NavigationClose from 'mdi-material-ui/Close'
 
 let counter = 0;
 function createData(name, floater, regular, joined, left, notes) {
@@ -158,18 +162,35 @@ class EnhancedTable extends React.Component {
       order: 'asc',
       orderBy: 'calories',
       selected: [],
-      data: [
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum'),
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum'),
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum'),
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum'),
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum'),
-        createData('Jo Snow', true, true, '2009-09-09', null, 'lorem ipsum')
-      ].sort((a, b) => (a.name < b.name ? -1 : 1)),
+      data: [],
       page: 0,
       rowsPerPage: 5,
+      team: []
     };
   }
+
+   componentWillMount() {
+     const _this = this
+     axios({
+       method: 'GET',
+       url: 'http://localhost:5035/api/teams',
+       headers: {
+         'Content-Type': 'text/plain',
+         'auth-token': this.props.user.token
+       }
+     })
+     .then(function (response) {
+       _this.setState( {data: response.data.team.map((volunteer, index) => {
+        return {
+          ...volunteer,
+          id: index
+        }
+       }).sort((a, b) => (a.name < b.name ? -1 : 1))} )
+     })
+     .catch((error) => {
+       // display UI error?
+     })
+   }
 
   handleRequestSort(event, property) {
     const orderBy = property;
@@ -262,12 +283,16 @@ class EnhancedTable extends React.Component {
                     <TableCell>
                       <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell>{n.name}</TableCell>
-                    <TableCell numeric>{n.floater}</TableCell>
-                    <TableCell numeric>{n.regular}</TableCell>
-                    <TableCell numeric>{n.joined}</TableCell>
-                    <TableCell numeric>{n.left}</TableCell>
-                    <TableCell numeric>{n.notes}</TableCell>
+                    <TableCell>{`${n.Volunteer.firstName} ${n.Volunteer.lastName}`}</TableCell>
+                    <TableCell>
+                      {(n.floater && <NavigationCheck />) || <NavigationClose />}
+                    </TableCell>
+                    <TableCell>
+                      {(n.regular && <NavigationCheck />) || <NavigationClose />}
+                    </TableCell>
+                    <TableCell>{n.joined}</TableCell>
+                    <TableCell>{n.left}</TableCell>
+                    <TableCell>{n.notes}</TableCell>
                   </TableRow>
                 );
               })}
@@ -324,9 +349,9 @@ export default withStyles(styles)(EnhancedTable);
 // 	constructor () {
 // 		super()
 
-// 		this.state = {
-// 			'team': []
-// 		}
+		// this.state = {
+		// 	'team': []
+		// }
 // 	}
 
 // 	componentWillMount() {

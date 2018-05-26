@@ -153,11 +153,11 @@ class EditProfile extends React.Component {
 		switch(key) {
 		case 'firstName':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^[A-zÀ-ÿ-\'\s]{1,35}$')
+			regex = new RegExp('^[A-Za-z-\'\s]{1,35}$')
 			break
 		case 'lastName':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^[A-zÀ-ÿ-\'\s]{1,35}$')
+			regex = new RegExp('^[A-Za-z-\'\s]{1,35}$')
 			break
 		case 'email':
 			errorMessage = 'Email addresses only'
@@ -165,19 +165,19 @@ class EditProfile extends React.Component {
 			break
 		case 'mailingAddress1':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';.!?-]){1,32}$')
+			regex = new RegExp('^([A-Za-z\\d\\s:\\\\#/()"\';.!?-]){1,32}$')
 			break
 		case 'mailingAddress2':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-zÀ-ÿ\\d\\s:\\\\#/()"\';.!?-]){0,32}$')
+			regex = new RegExp('^([A-Za-z\\d\\s:\\\\#/()"\';.!?-]){0,32}$')
 			break
 		case 'city':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-zÀ-ÿ\\s\'-]){1,35}$')
+			regex = new RegExp('^([A-Za-z\\s\'-]){1,35}$')
 			break
 		case 'province':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^([A-z\\s]){1,35}$')
+			regex = new RegExp('^([A-Za-z\\s]){1,35}$')
 			break
 		case 'postcode':
 			errorMessage = 'Canadian postcodes only'
@@ -195,7 +195,7 @@ class EditProfile extends React.Component {
 			break
 		case 'emergencyName':
 			errorMessage = 'Letters, spaces and punctuation only'
-			regex = new RegExp('^[A-zÀ-ÿ-\'\\s]{1,35}$')
+			regex = new RegExp('^[A-Za-z-\'\\s]{1,35}$')
 			break
 		case 'emergencyPhone':
 			clean = clean.startsWith('+1') ? clean.replace(/\D/g, '').slice(1) : clean
