@@ -18,10 +18,12 @@ import Checkbox from 'material-ui/Checkbox';
 import IconButton from 'material-ui/IconButton';
 import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from 'mdi-material-ui/Delete';
-import FilterIcon from 'mdi-material-ui/Filter';
+import MagnifyIcon from 'mdi-material-ui/Magnify';
+import NavigationCloseIcon from 'mdi-material-ui/Close'
 // icons
 import NavigationCheck from 'mdi-material-ui/Check'
-import NavigationClose from 'mdi-material-ui/Close'
+// transitions
+import Collapse from 'material-ui/transitions/Collapse';
 
 let counter = 0;
 function createData(name, floater, regular, joined, left, notes) {
@@ -45,9 +47,9 @@ class EnhancedTableHead extends React.Component {
 		this.createSortHandler = this.createSortHandler.bind(this)
 	}
   createSortHandler(property) {
-	return function (event) {
-		return this.props.onRequestSort(event, property);
-	}	  
+    return function (event) {
+      return this.props.onRequestSort(event, property);
+    }
   }
 
   render() {
@@ -57,11 +59,13 @@ class EnhancedTableHead extends React.Component {
       <TableHead>
         <TableRow>
           <TableCell padding="checkbox">
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
+            {(this.rowCount && 
+              <Checkbox
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={numSelected === rowCount}
+                onChange={onSelectAllClick}
+              />
+            )}
           </TableCell>
           {columnData.map(column => {
             return (
@@ -105,8 +109,7 @@ EnhancedTableHead.propTypes = {
 const toolbarStyles = {};
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props;
-
+  const { classes, numSelected, searchOpen, toggleSearchForm } = props;
   return (
     <Toolbar>
       <div className="title">
@@ -127,9 +130,14 @@ let EnhancedTableToolbar = props => {
             </IconButton>
           </Tooltip>
         ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterIcon />
+          <Tooltip title="Search">
+            <IconButton aria-label="Search"
+              onClick={toggleSearchForm}
+            >
+              {searchOpen ?
+                <NavigationCloseIcon /> :
+                <MagnifyIcon />
+              }
             </IconButton>
           </Tooltip>
         )}
@@ -141,6 +149,8 @@ let EnhancedTableToolbar = props => {
 EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
+  toggleSearchForm: PropTypes.func.isRequired,
+  searchOpen: PropTypes.bool.isRequired
 };
 
 EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar);
@@ -156,7 +166,8 @@ class EnhancedTable extends React.Component {
 	this.handleSelectAllClick = this.handleSelectAllClick.bind(this)
 	this.handleClick = this.handleClick.bind(this)
 	this.handleChangePage = this.handleChangePage.bind(this)
-	this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
+  this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
+  this.toggleSearchForm = this.toggleSearchForm.bind(this)
 
     this.state = {
       order: 'asc',
@@ -165,32 +176,33 @@ class EnhancedTable extends React.Component {
       data: [],
       page: 0,
       rowsPerPage: 5,
-      team: []
+      team: [],
+      searchFormOpen: false
     };
   }
 
-   componentWillMount() {
-     const _this = this
-     axios({
-       method: 'GET',
-       url: 'http://localhost:5035/api/teams',
-       headers: {
-         'Content-Type': 'text/plain',
-         'auth-token': this.props.user.token
-       }
-     })
-     .then(function (response) {
-       _this.setState( {data: response.data.team.map((volunteer, index) => {
-        return {
-          ...volunteer,
-          id: index
-        }
-       }).sort((a, b) => (a.name < b.name ? -1 : 1))} )
-     })
-     .catch((error) => {
-       // display UI error?
-     })
-   }
+  componentWillMount() {
+    const _this = this
+    axios({
+      method: 'GET',
+      url: 'http://localhost:5035/api/teams',
+      headers: {
+        'Content-Type': 'text/plain',
+        'auth-token': this.props.user.token
+      }
+    })
+    .then(function (response) {
+      _this.setState( {data: response.data.team.map((volunteer, index) => {
+      return {
+        ...volunteer,
+        id: index
+      }
+      }).sort((a, b) => (a.name < b.name ? -1 : 1))} )
+    })
+    .catch((error) => {
+      // display UI error?
+    })
+  }
 
   handleRequestSort(event, property) {
     const orderBy = property;
@@ -247,7 +259,11 @@ class EnhancedTable extends React.Component {
 
   isSelected(id) {
 	  return this.state.selected.indexOf(id) !== -1
-	};
+  };
+  
+  toggleSearchForm() {
+    this.setState({ searchFormOpen: !this.state.searchFormOpen });
+  };
 
   render() {
     const { classes } = this.props;
@@ -256,7 +272,21 @@ class EnhancedTable extends React.Component {
 
     return (
       <Paper>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar 
+          numSelected={selected.length}
+          toggleSearchForm={this.toggleSearchForm}
+          searchOpen={this.state.searchFormOpen} 
+        />
+
+        <Collapse in={this.state.searchFormOpen}>
+          <p>Insert form here:</p>
+            <ul>
+              <li>input: search string, with clear icon</li>
+              <li>checkbox: team name</li>
+            </ul> 
+          <p>Add filter function: returns teams filtered through team names and search string</p>
+        </Collapse>
+
         <div className="table__wrapper">
           <Table className="table">
             <EnhancedTableHead
@@ -285,10 +315,10 @@ class EnhancedTable extends React.Component {
                     </TableCell>
                     <TableCell>{`${n.Volunteer.firstName} ${n.Volunteer.lastName}`}</TableCell>
                     <TableCell>
-                      {(n.floater && <NavigationCheck />) || <NavigationClose />}
+                      {(n.floater && <NavigationCheck />) || <NavigationCloseIcon />}
                     </TableCell>
                     <TableCell>
-                      {(n.regular && <NavigationCheck />) || <NavigationClose />}
+                      {(n.regular && <NavigationCheck />) || <NavigationCloseIcon />}
                     </TableCell>
                     <TableCell>{n.joined}</TableCell>
                     <TableCell>{n.left}</TableCell>
