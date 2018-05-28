@@ -13,6 +13,11 @@ import Table, {
     TableRow,
     TableSortLabel,
 } from 'material-ui/Table';
+
+import FormControl from 'material-ui/Form/FormControl'
+import InputLabel from 'material-ui/Input/InputLabel'
+import Input from 'material-ui/Input/Input'
+import InputAdornment from 'material-ui/Input/InputAdornment'
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Paper from 'material-ui/Paper';
@@ -24,8 +29,10 @@ import MagnifyIcon from 'mdi-material-ui/Magnify';
 import NavigationCloseIcon from 'mdi-material-ui/Close'
 // icons
 import NavigationCheck from 'mdi-material-ui/Check'
+import CloseIcon from 'mdi-material-ui/Close'
 // transitions
 import Collapse from 'material-ui/transitions/Collapse';
+import './team/ViewTeam.css'
 
 let counter = 0;
 function createData(name, floater, regular, joined, left, notes) {
@@ -171,6 +178,9 @@ class EnhancedTable extends React.Component {
   this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
   this.toggleSearchForm = this.toggleSearchForm.bind(this)
   this.filteredTeam = this.filteredTeam.bind(this)
+  this.toggleTeamSelection = this.toggleTeamSelection.bind(this)
+  this.updateSearchString = this.updateSearchString.bind(this)
+  this.clearSearchString = this.clearSearchString.bind(this)
 
   this.state = {
       order: 'asc',
@@ -207,7 +217,7 @@ class EnhancedTable extends React.Component {
       _this.setState({teamNames: response.data.teams.map(team => {
         return {
           name: team.name,
-          id: team.id,
+          id: String(team.id),
           selected: true
         }
       })})
@@ -279,7 +289,7 @@ class EnhancedTable extends React.Component {
   };
 
   toggleTeamSelection(id) {
-    let modified = {...this.state.teamNames}
+    let modified = [...this.state.teamNames]
     modified.forEach(team => {
       if (team.id === id) {
         team.selected = !team.selected
@@ -289,7 +299,31 @@ class EnhancedTable extends React.Component {
   };
 
   filteredTeam() {
-    if (this.state.search) {}
+    let team = [...this.state.team]
+    if (this.state.searchString) {
+      team = team.filter(member => {
+        return member.firstName.includes(this.state.searchString) || member.lastName.includes(this.state.searchString)
+      })
+    }
+
+    this.state.teamNames.forEach(t => {
+      if (!t.selected) {
+        team = team.filter(n => {
+          return n.id !== t.id
+        })
+      }
+    })
+
+    console.log(team.length)
+    return team
+  }
+
+  updateSearchString(event) {
+    this.setState({ searchString: event.target.value})
+  }
+
+  clearSearchString() {
+    this.setState({ searchString: ''})
   }
 
   render() {
@@ -306,14 +340,15 @@ class EnhancedTable extends React.Component {
         />
 
         <Collapse in={this.state.searchFormOpen}>
-          <FormGroup row>
+          <FormGroup row className="search__wrapper">
             {this.state.teamNames.map((team, index) => {
               return (
                 <FormControlLabel
+                  key={team.id}
                   control={
                     <Checkbox
                       checked={team.selected}
-                      onChange={this.toggleSearchForm}
+                      onChange={() => this.toggleTeamSelection(team.id)}
                       value={team.id}
                       color="primary"
                     />
@@ -322,12 +357,27 @@ class EnhancedTable extends React.Component {
                 />
               )
             })}
+
+            <FormControl>
+              <InputLabel htmlFor="adornment-search">Search</InputLabel>
+              <Input
+              id="adornment-search"
+              type='text'
+              value={this.state.searchString}
+              onChange={this.updateSearchString}
+              endAdornment={
+                <InputAdornment position="end">
+                <IconButton
+                  aria-label="Clear search"
+                  onClick={this.clearSearchString}
+                >
+                  <CloseIcon />
+                </IconButton>
+                </InputAdornment>
+              }
+              />
+            </FormControl>
           </FormGroup>
-          <p>Insert form here:</p>
-            <ul>
-              <li>input: search string, with clear icon</li>
-              <li>checkbox: team name</li>
-            </ul> 
           <p>Add filter function: returns teams filtered through team names and search string</p>
         </Collapse>
 
@@ -342,7 +392,7 @@ class EnhancedTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+              {this.filteredTeam().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                 const isSelected = this.isSelected(n.id);
                 return (
                   <TableRow

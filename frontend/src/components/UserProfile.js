@@ -49,6 +49,9 @@ const styles = {
 	},
 	marginTop10: {
 		marginTop: '10px'
+	},
+	redB: {
+		backgroundColor: 'red'
 	}
 }
 
@@ -152,7 +155,7 @@ class UserProfile extends React.Component {
 							
 							{(this.props.user.isAdmin && this.props.user.isStaff && <Typography gutterBottom={true}>Administrator, Staff Member</Typography>) || (this.props.user.isAdmin && <Typography gutterBottom={true}>Administrator</Typography>) || (this.props.user.isStaff && <Typography gutterBottom={true}>Staff Member</Typography>) || (<Typography gutterBottom={true}>Volunteer</Typography>)}
 
-							<Typography type="body1" gutterBottom={true}>{this.props.user.email}</Typography>
+							<Typography style={styles.redB} type="body1" gutterBottom={true}>HHH{this.props.user.email}</Typography>
 
 							<Divider />
 
