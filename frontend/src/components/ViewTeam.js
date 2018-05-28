@@ -177,10 +177,11 @@ class EnhancedTable extends React.Component {
 	this.handleChangePage = this.handleChangePage.bind(this)
   this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
   this.toggleSearchForm = this.toggleSearchForm.bind(this)
-  this.filteredTeam = this.filteredTeam.bind(this)
   this.toggleTeamSelection = this.toggleTeamSelection.bind(this)
   this.updateSearchString = this.updateSearchString.bind(this)
   this.clearSearchString = this.clearSearchString.bind(this)
+  this.filteredByTeam = this.filteredByTeam.bind(this)
+  this.filteredBySearchString = this.filteredBySearchString.bind(this)
 
   this.state = {
       order: 'asc',
@@ -298,24 +299,18 @@ class EnhancedTable extends React.Component {
     this.setState({ teamNames: modified });
   };
 
-  filteredTeam() {
-    let team = [...this.state.team]
-    if (this.state.searchString) {
-      team = team.filter(member => {
-        return member.firstName.includes(this.state.searchString) || member.lastName.includes(this.state.searchString)
-      })
-    }
-
-    this.state.teamNames.forEach(t => {
-      if (!t.selected) {
-        team = team.filter(n => {
-          return n.id !== t.id
-        })
-      }
+  filteredByTeam() {
+    let selected = this.state.teamNames.filter(name => name.selected).map(name => name.id)
+    return this.state.data.filter(member => {
+      return selected.includes(String(member.AreaId)) 
     })
+  }
 
-    console.log(team.length)
-    return team
+  filteredBySearchString() {
+    return !this.state.searchString ? this.filteredByTeam() : this.filteredByTeam().filter(member => {
+        let searchIn = member.Volunteer.firstName.toLowerCase() + member.Volunteer.lastName.toLowerCase()
+        return searchIn.includes(this.state.searchString) || searchIn.includes(this.state.searchString)
+      })
   }
 
   updateSearchString(event) {
@@ -328,7 +323,8 @@ class EnhancedTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+    const { order, orderBy, selected, rowsPerPage, page } = this.state;
+    const data = this.filteredBySearchString()
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
     return (
@@ -378,7 +374,6 @@ class EnhancedTable extends React.Component {
               />
             </FormControl>
           </FormGroup>
-          <p>Add filter function: returns teams filtered through team names and search string</p>
         </Collapse>
 
         <div className="table__wrapper">
@@ -392,7 +387,7 @@ class EnhancedTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {this.filteredTeam().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                 const isSelected = this.isSelected(n.id);
                 return (
                   <TableRow
