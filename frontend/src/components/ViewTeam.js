@@ -3,6 +3,8 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
+import FormGroup from 'material-ui/Form/FormGroup'
+import FormControlLabel from 'material-ui/Form/FormControlLabel'
 import Table, {
     TableBody,
     TableCell,
@@ -168,8 +170,9 @@ class EnhancedTable extends React.Component {
 	this.handleChangePage = this.handleChangePage.bind(this)
   this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this)
   this.toggleSearchForm = this.toggleSearchForm.bind(this)
+  this.filteredTeam = this.filteredTeam.bind(this)
 
-    this.state = {
+  this.state = {
       order: 'asc',
       orderBy: 'calories',
       selected: [],
@@ -177,9 +180,12 @@ class EnhancedTable extends React.Component {
       page: 0,
       rowsPerPage: 5,
       team: [],
-      searchFormOpen: false
+      searchFormOpen: false,
+      searchString: '',
+      teamNames: []
     };
   }
+
 
   componentWillMount() {
     const _this = this
@@ -198,6 +204,13 @@ class EnhancedTable extends React.Component {
         id: index
       }
       }).sort((a, b) => (a.name < b.name ? -1 : 1))} )
+      _this.setState({teamNames: response.data.teams.map(team => {
+        return {
+          name: team.name,
+          id: team.id,
+          selected: true
+        }
+      })})
     })
     .catch((error) => {
       // display UI error?
@@ -265,6 +278,20 @@ class EnhancedTable extends React.Component {
     this.setState({ searchFormOpen: !this.state.searchFormOpen });
   };
 
+  toggleTeamSelection(id) {
+    let modified = {...this.state.teamNames}
+    modified.forEach(team => {
+      if (team.id === id) {
+        team.selected = !team.selected
+      }
+    })
+    this.setState({ teamNames: modified });
+  };
+
+  filteredTeam() {
+    if (this.state.search) {}
+  }
+
   render() {
     const { classes } = this.props;
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
@@ -279,6 +306,23 @@ class EnhancedTable extends React.Component {
         />
 
         <Collapse in={this.state.searchFormOpen}>
+          <FormGroup row>
+            {this.state.teamNames.map((team, index) => {
+              return (
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={team.selected}
+                      onChange={this.toggleSearchForm}
+                      value={team.id}
+                      color="primary"
+                    />
+                  }
+                  label={team.name}
+                />
+              )
+            })}
+          </FormGroup>
           <p>Insert form here:</p>
             <ul>
               <li>input: search string, with clear icon</li>

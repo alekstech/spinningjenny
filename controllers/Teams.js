@@ -22,7 +22,7 @@ module.exports = {
                         'VolunteerId': req.decoded.id,
                         'coordinator': true
                     },
-                    fields: ['AreaId']
+                    fields: ['AreaId', 'name']
                 })
             }
 
@@ -32,16 +32,19 @@ module.exports = {
                         [Sequelize.Op.in]: areas.map(area => area.id)
                     }
                 },
-                include: [{
-					model: Volunteer,
-					attributes: ["firstName", "lastName"]
-				}]
+                include: [
+                    {
+					    model: Volunteer,
+					    attributes: ["firstName", "lastName"]
+                    }
+                ]
             })
 
             res.send({
                 code: 200,
                 status: 'OK',
-                team: volunteers
+                team: volunteers,
+                teams: areas
             })
         } catch (err) {
 
