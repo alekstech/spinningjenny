@@ -194,32 +194,39 @@ export function updateUserProfileErrorMessage(message) {
 // ===================================================================
 // Teams
 // ===================================================================
-// export function getUsersTeams(resourcePath, options) {
-// 	return (dispatch) => {
+export function deleteUsers(resourcePath, options) {
+	return (dispatch) => {
 
-// 		dispatch(fetchingTeams(true))
+		dispatch(deletingUsers(true))
 
-// 		axios({
-// 			url: resourcePath,
-// 			method: options.method,
-// 			headers: options.headers,
-// 			data: options.body,
-// 			timeout: 5000
-// 		})
-// 		.then((response) => {
-// 			dispatch(fetchTeamsError({
-// 				error: false,
-// 				message: ''
-// 			}))
-// 			dispatch(usersTeams(response.data))
-// 			dispatch(fetchingTeams(false))
-// 		})
-// 		.catch((error) => {
-// 			dispatch(fetchingTeams(false))
-// 			dispatch(fetchTeamsError({
-// 				error: true,
-// 				message: 'We could not fetch your teams'
-// 			}))
-// 		})
-// 	}
-// }
+		axios({
+			url: resourcePath,
+			method: options.method,
+			headers: options.headers,
+			data: options.body,
+			timeout: 5000
+		})
+		.then((response) => {
+			dispatch(deletedUsers(response.data))
+			dispatch(deletingUsers(false))
+		})
+		.catch((error) => {
+			dispatch(deletingUsers(false))
+			dispatch(deleteUsersError({
+				error: true,
+				message: 'We could not delete users'
+			}))
+		})
+	}
+}
+
+export function deletingUsers(bool) {
+	return {
+		type: 'DELETING_USERS',
+		bool
+	}
+}
+
+export function deleteUsersError() {}
+
+export function deletedUsers() {}
