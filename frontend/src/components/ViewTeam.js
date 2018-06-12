@@ -118,7 +118,8 @@ EnhancedTableHead.propTypes = {
 const toolbarStyles = {};
 
 let EnhancedTableToolbar = props => {
-  const { classes, numSelected, searchOpen, toggleSearchForm } = props;
+  const { classes, numSelected, searchOpen, toggleSearchForm, token, deleteCall } = props;
+  // const token = props.user.token
 
   const users = [{
     left: Date(null),
@@ -131,14 +132,14 @@ let EnhancedTableToolbar = props => {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'text/plain',
-				'auth-token': this.props.user.token
+				'auth-token': token
       },
       body: {
         users
       }
 		}
 
-		this.props.deleteUsers('/api/teams', options)
+		deleteCall('/api/teams', options)
   }
 
   return (
@@ -355,6 +356,8 @@ class EnhancedTable extends React.Component {
           numSelected={selected.length}
           toggleSearchForm={this.toggleSearchForm}
           searchOpen={this.state.searchFormOpen} 
+          token={this.props.user.token}
+          deleteCall={this.props.deleteUsers}
         />
 
         <Collapse in={this.state.searchFormOpen}>
