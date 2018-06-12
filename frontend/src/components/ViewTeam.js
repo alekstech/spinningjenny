@@ -119,6 +119,28 @@ const toolbarStyles = {};
 
 let EnhancedTableToolbar = props => {
   const { classes, numSelected, searchOpen, toggleSearchForm } = props;
+
+  const users = [{
+    left: Date(null),
+    AreaId: null,
+    VolunteerId: null
+  }]
+
+  const deleteUsers = function () {
+    let options = {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'text/plain',
+				'auth-token': this.props.user.token
+      },
+      body: {
+        users
+      }
+		}
+
+		this.props.deleteUsers('/api/teams', options)
+  }
+
   return (
     <Toolbar>
       <div className="title">
@@ -134,7 +156,7 @@ let EnhancedTableToolbar = props => {
       <div className="actions">
         {numSelected > 0 ? (
           <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
+            <IconButton aria-label="Delete" onClick={deleteUsers}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -170,7 +192,7 @@ class EnhancedTable extends React.Component {
   constructor(props, context) {
 	super(props, context);
 	
-	this.isSelected = this.isSelected.bind(this)
+  this.isSelected = this.isSelected.bind(this)
 	this.handleRequestSort = this.handleRequestSort.bind(this)
 	this.handleSelectAllClick = this.handleSelectAllClick.bind(this)
 	this.handleClick = this.handleClick.bind(this)
@@ -340,7 +362,7 @@ class EnhancedTable extends React.Component {
             {this.state.teamNames.map((team, index) => {
               return (
                 <FormControlLabel
-                  key={team.id}
+                  key={index}
                   control={
                     <Checkbox
                       checked={team.selected}

@@ -112,6 +112,12 @@ module.exports = (app) => {
 		TeamsController.viewTeam
 	)
 
+	// Update a volunteer's profile information
+	app.delete('/api/teams', 
+		bodyParser.json(),
+		TeamsController.deleteUsers
+	)
+
 	// Handle all remaining routes
 	app.get('*', (req, res) => {
 		res.sendFile(path.resolve(__dirname, '.', 'frontend/build', 'index.html'))
